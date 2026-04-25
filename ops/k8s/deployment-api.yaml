@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: developer-evaluation-api
+  namespace: developer-evaluation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: developer-evaluation-api
+  template:
+    metadata:
+      labels:
+        app: developer-evaluation-api
+    spec:
+      containers:
+        - name: api
+          image: developer-evaluation-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: developer-evaluation-api-config
+            - secretRef:
+                name: developer-evaluation-api-secrets
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 20

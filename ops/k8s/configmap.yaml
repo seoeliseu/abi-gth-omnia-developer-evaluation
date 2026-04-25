@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: developer-evaluation-api-config
+  namespace: developer-evaluation
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  Observabilidade__SeqUrl: http://seq:5341
+  RabbitMq__QueueName: developer-evaluation.webapi

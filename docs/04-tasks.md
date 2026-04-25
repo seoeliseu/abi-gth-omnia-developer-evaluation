@@ -19,13 +19,13 @@ Commits sugeridos:
 ## Épico 2. Arquitetura e cross-cutting
 
 - [x] Definir projetos base por camada.
-- [ ] Implementar `Result<T>` compartilhado.
-- [ ] Configurar Serilog com saída em Console JSON.
-- [ ] Configurar Seq como backend local de consulta de logs.
-- [ ] Definir campos obrigatórios e correlação dos logs estruturados.
-- [ ] Configurar health checks.
-- [ ] Configurar integração com RabbitMQ.
-- [ ] Preparar artefatos iniciais para Kubernetes.
+- [x] Implementar `Result<T>` compartilhado.
+- [x] Configurar Serilog com saída em Console JSON.
+- [x] Configurar Seq como backend local de consulta de logs.
+- [x] Definir campos obrigatórios e correlação dos logs estruturados.
+- [x] Configurar health checks.
+- [x] Configurar integração com RabbitMQ.
+- [x] Preparar artefatos iniciais para Kubernetes.
 
 Commits sugeridos:
 
