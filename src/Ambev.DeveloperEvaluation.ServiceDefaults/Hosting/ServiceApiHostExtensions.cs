@@ -44,7 +44,10 @@ public static class ServiceApiHostExtensions
             }
         });
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(opcoes =>
+        {
+            opcoes.SuppressAsyncSuffixInActionNames = false;
+        });
         builder.Services.AddProblemDetails();
         builder.Services.AddRateLimiter(opcoes =>
         {

@@ -144,16 +144,16 @@ Commits sugeridos:
 
 ## Épico 6. Testes
 
-- [ ] Criar suíte de testes unitários para regras de desconto.
-- [ ] Criar testes para limites de quantidade.
-- [ ] Criar testes dos handlers principais.
-- [ ] Criar ao menos um teste de integração do fluxo de criação.
+- [x] Criar suíte de testes unitários para regras de desconto.
+- [x] Criar testes para limites de quantidade.
+- [x] Criar testes dos handlers principais.
+- [x] Criar ao menos um teste de integração do fluxo de criação.
 - [x] Criar infraestrutura base de Testcontainers para PostgreSQL.
-- [ ] Criar infraestrutura base de Testcontainers para MongoDB.
+- [x] Criar infraestrutura base de Testcontainers para MongoDB.
 - [x] Criar infraestrutura base de Testcontainers para RabbitMQ.
-- [ ] Criar testes de integração de persistência com banco real.
+- [x] Criar testes de integração de persistência com banco real.
 - [x] Criar testes de integração de mensageria com broker real.
-- [ ] Criar testes funcionais da API com `WebApplicationFactory` e Testcontainers.
+- [x] Criar testes funcionais da API com `WebApplicationFactory` e Testcontainers.
 
 Commits sugeridos:
 

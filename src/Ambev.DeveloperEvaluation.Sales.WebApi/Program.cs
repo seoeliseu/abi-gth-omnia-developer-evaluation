@@ -10,3 +10,5 @@ var app = ServiceApiHostExtensions.BuildServiceApi(
 		services.AdicionarMensageriaSales(configuration);
 	});
 await app.RunAsync();
+
+public partial class Program;
