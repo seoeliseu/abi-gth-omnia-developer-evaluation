@@ -1,4 +1,6 @@
 using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
+using Ambev.DeveloperEvaluation.Application.Auth.Contracts;
+using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
 using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Repositories;
@@ -30,6 +32,8 @@ public static class ExtensoesInjecaoDependencia
         servicos.AddSingleton<IIdempotencyStore, ArmazenamentoIdempotenciaEmMemoria>();
         servicos.AddSingleton<IUsersService, UsersServiceEmMemoria>();
         servicos.AddSingleton<IProductsService, ProductsServiceEmMemoria>();
+        servicos.AddSingleton<ICartsService, CartsServiceEmMemoria>();
+        servicos.AddSingleton<IAuthService, AuthServiceEmMemoria>();
         servicos.AddScoped<ISalesApplicationService, SalesApplicationService>();
     }
 

@@ -93,12 +93,12 @@ Commits sugeridos:
 
 ## Épico 4.1 Demais APIs do desafio
 
-- [ ] Implementar CRUD de `Products` conforme a spec.
-- [ ] Implementar endpoint de categorias e consulta por categoria em `Products`.
-- [ ] Implementar CRUD de `Carts` conforme a spec.
-- [ ] Implementar CRUD de `Users` conforme a spec.
-- [ ] Implementar `POST /auth/login` conforme a spec.
-- [ ] Garantir paginação, ordenação, filtros e contrato de erro compatíveis nos quatro serviços de apoio.
+- [x] Implementar CRUD de `Products` conforme a spec.
+- [x] Implementar endpoint de categorias e consulta por categoria em `Products`.
+- [x] Implementar CRUD de `Carts` conforme a spec.
+- [x] Implementar CRUD de `Users` conforme a spec.
+- [x] Implementar `POST /auth/login` conforme a spec.
+- [x] Garantir paginação, ordenação, filtros e contrato de erro compatíveis nos quatro serviços de apoio.
 
 Commits sugeridos:
 

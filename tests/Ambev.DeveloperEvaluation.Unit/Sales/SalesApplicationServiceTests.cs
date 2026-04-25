@@ -97,6 +97,40 @@ public class SalesApplicationServiceTests
             IReadOnlyCollection<UserReference> usuarios = [new UserReference(1, "usuario1", "email@example.com", "Active", "Customer", true)];
             return Task.FromResult(Result<IReadOnlyCollection<UserReference>>.Success(usuarios));
         }
+
+        public Task<Result<PagedResult<UserDetail>>> ListarAsync(UserListFilter filtro, CancellationToken cancellationToken)
+        {
+            IReadOnlyCollection<UserDetail> usuarios =
+            [
+                new UserDetail(1, "email@example.com", "usuario1", "123456", new UserNameData("Usuario", "Um"), new UserAddressData("São Paulo", "Rua A", 1, "01000-000", new UserGeolocationData("-23.55", "-46.63")), "11999999999", "Active", "Customer")
+            ];
+
+            var paged = new PagedResult<UserDetail>(usuarios, usuarios.Count, 1, 1);
+            return Task.FromResult(Result<PagedResult<UserDetail>>.Success(paged));
+        }
+
+        public Task<Result<UserDetail>> ObterDetalhePorIdAsync(long usuarioId, CancellationToken cancellationToken)
+        {
+            var usuario = new UserDetail(usuarioId, "email@example.com", $"usuario{usuarioId}", "123456", new UserNameData("Usuario", "Teste"), new UserAddressData("São Paulo", "Rua A", 1, "01000-000", new UserGeolocationData("-23.55", "-46.63")), "11999999999", "Active", "Customer");
+            return Task.FromResult(Result<UserDetail>.Success(usuario));
+        }
+
+        public Task<Result<UserDetail>> CriarAsync(UpsertUserRequest requisicao, CancellationToken cancellationToken)
+        {
+            var usuario = new UserDetail(99, requisicao.Email, requisicao.Username, requisicao.Password, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
+            return Task.FromResult(Result<UserDetail>.Success(usuario));
+        }
+
+        public Task<Result<UserDetail>> AtualizarAsync(long usuarioId, UpsertUserRequest requisicao, CancellationToken cancellationToken)
+        {
+            var usuario = new UserDetail(usuarioId, requisicao.Email, requisicao.Username, requisicao.Password, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
+            return Task.FromResult(Result<UserDetail>.Success(usuario));
+        }
+
+        public Task<Result<UserDetail>> RemoverAsync(long usuarioId, CancellationToken cancellationToken)
+        {
+            return ObterDetalhePorIdAsync(usuarioId, cancellationToken);
+        }
     }
 
     private sealed class FakeProductsService : IProductsService
@@ -110,6 +144,50 @@ public class SalesApplicationServiceTests
         {
             IReadOnlyCollection<ProductReference> produtos = produtosIds.Select(id => new ProductReference(id, $"Produto {id}", 10m, "categoria", true)).ToArray();
             return Task.FromResult(Result<IReadOnlyCollection<ProductReference>>.Success(produtos));
+        }
+
+        public Task<Result<PagedResult<ProductDetail>>> ListarAsync(ProductListFilter filtro, CancellationToken cancellationToken)
+        {
+            IReadOnlyCollection<ProductDetail> produtos =
+            [
+                new ProductDetail(1, "Produto 1", 10m, "Descricao", "categoria", "https://example.com/1.png", new ProductRatingData(4.5m, 10), true)
+            ];
+
+            return Task.FromResult(Result<PagedResult<ProductDetail>>.Success(new PagedResult<ProductDetail>(produtos, produtos.Count, 1, 1)));
+        }
+
+        public Task<Result<ProductDetail>> CriarAsync(UpsertProductRequest requisicao, CancellationToken cancellationToken)
+        {
+            var produto = new ProductDetail(99, requisicao.Title, requisicao.Price, requisicao.Description, requisicao.Category, requisicao.Image, requisicao.Rating, true);
+            return Task.FromResult(Result<ProductDetail>.Success(produto));
+        }
+
+        public Task<Result<ProductDetail>> AtualizarAsync(long produtoId, UpsertProductRequest requisicao, CancellationToken cancellationToken)
+        {
+            var produto = new ProductDetail(produtoId, requisicao.Title, requisicao.Price, requisicao.Description, requisicao.Category, requisicao.Image, requisicao.Rating, true);
+            return Task.FromResult(Result<ProductDetail>.Success(produto));
+        }
+
+        public Task<Result<ProductDetail>> ObterDetalhePorIdAsync(long produtoId, CancellationToken cancellationToken)
+        {
+            var produto = new ProductDetail(produtoId, $"Produto {produtoId}", 10m, "Descricao", "categoria", "https://example.com/1.png", new ProductRatingData(4.5m, 10), true);
+            return Task.FromResult(Result<ProductDetail>.Success(produto));
+        }
+
+        public Task<Result<ProductDetail>> RemoverAsync(long produtoId, CancellationToken cancellationToken)
+        {
+            return ObterDetalhePorIdAsync(produtoId, cancellationToken);
+        }
+
+        public Task<Result<IReadOnlyCollection<string>>> ListarCategoriasAsync(CancellationToken cancellationToken)
+        {
+            IReadOnlyCollection<string> categorias = ["categoria"];
+            return Task.FromResult(Result<IReadOnlyCollection<string>>.Success(categorias));
+        }
+
+        public Task<Result<PagedResult<ProductDetail>>> ListarPorCategoriaAsync(string categoria, ProductListFilter filtro, CancellationToken cancellationToken)
+        {
+            return ListarAsync(filtro with { Category = categoria }, cancellationToken);
         }
     }
 
