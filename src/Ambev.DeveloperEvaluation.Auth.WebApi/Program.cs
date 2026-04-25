@@ -10,3 +10,5 @@ var app = ServiceApiHostExtensions.BuildServiceApi(
 		services.AdicionarMensageriaAuth(configuration);
 	});
 await app.RunAsync();
+
+public partial class Program;

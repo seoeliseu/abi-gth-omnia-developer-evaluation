@@ -1,4 +1,4 @@
-using Ambev.DeveloperEvaluation.Sales.WebApi.Controllers;
+using Ambev.DeveloperEvaluation.Auth.WebApi.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -6,11 +6,11 @@ using Testcontainers.MongoDb;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 
-namespace Ambev.DeveloperEvaluation.Functional.Sales;
+namespace Ambev.DeveloperEvaluation.Functional.Auth;
 
-public sealed class SalesApiFactory : WebApplicationFactory<SalesController>, IAsyncLifetime
+public sealed class AuthApiFactory : WebApplicationFactory<AuthController>, IAsyncLifetime
 {
-    private const string DatabaseName = "developer-evaluation-functional";
+    private const string DatabaseName = "developer-evaluation-auth-functional";
     private static readonly IReadOnlyDictionary<string, string?> EmptySettings = new Dictionary<string, string?>
     {
         ["ConnectionStrings__Postgres"] = null,
@@ -21,7 +21,7 @@ public sealed class SalesApiFactory : WebApplicationFactory<SalesController>, IA
     };
 
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder("postgres:15.1")
-        .WithDatabase("developer_evaluation_functional")
+        .WithDatabase("developer_evaluation_auth_functional")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
@@ -46,7 +46,7 @@ public sealed class SalesApiFactory : WebApplicationFactory<SalesController>, IA
             ["ConnectionStrings__MongoDb"] = _mongoDbContainer.GetConnectionString(),
             ["MongoDb__Database"] = DatabaseName,
             ["RabbitMq__ConnectionString"] = _rabbitMqContainer.GetConnectionString(),
-            ["RabbitMq__QueueName"] = "developer-evaluation.sales.functional"
+            ["RabbitMq__QueueName"] = "developer-evaluation.auth.functional"
         });
     }
 
@@ -70,7 +70,7 @@ public sealed class SalesApiFactory : WebApplicationFactory<SalesController>, IA
                 ["ConnectionStrings:MongoDb"] = _mongoDbContainer.GetConnectionString(),
                 ["MongoDb:Database"] = DatabaseName,
                 ["RabbitMq:ConnectionString"] = _rabbitMqContainer.GetConnectionString(),
-                ["RabbitMq:QueueName"] = "developer-evaluation.sales.functional"
+                ["RabbitMq:QueueName"] = "developer-evaluation.auth.functional"
             });
         });
     }

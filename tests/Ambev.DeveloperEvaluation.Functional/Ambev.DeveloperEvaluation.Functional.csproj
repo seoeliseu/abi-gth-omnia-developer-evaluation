@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Auth.WebApi\Ambev.DeveloperEvaluation.Auth.WebApi.csproj" />
     <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Sales.WebApi\Ambev.DeveloperEvaluation.Sales.WebApi.csproj" />
   </ItemGroup>
 
