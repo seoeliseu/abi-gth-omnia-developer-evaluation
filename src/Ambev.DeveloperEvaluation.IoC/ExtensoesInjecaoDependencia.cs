@@ -1,3 +1,10 @@
+using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
+using Ambev.DeveloperEvaluation.Application.Products.Contracts;
+using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
+using Ambev.DeveloperEvaluation.Application.Sales.Repositories;
+using Ambev.DeveloperEvaluation.Application.Sales.Services;
+using Ambev.DeveloperEvaluation.Application.Users.Contracts;
+using Ambev.DeveloperEvaluation.IoC.Aplicacao;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -10,10 +17,20 @@ public static class ExtensoesInjecaoDependencia
 {
     public static IServiceCollection AdicionarServicosTransversais(this IServiceCollection servicos, IConfiguration configuracao)
     {
+        servicos.AdicionarServicosAplicacao();
         servicos.AdicionarHealthChecks();
         servicos.AdicionarMensageria(configuracao);
 
         return servicos;
+    }
+
+    private static void AdicionarServicosAplicacao(this IServiceCollection servicos)
+    {
+        servicos.AddSingleton<ISaleRepository, RepositorioVendaEmMemoria>();
+        servicos.AddSingleton<IIdempotencyStore, ArmazenamentoIdempotenciaEmMemoria>();
+        servicos.AddSingleton<IUsersService, UsersServiceEmMemoria>();
+        servicos.AddSingleton<IProductsService, ProductsServiceEmMemoria>();
+        servicos.AddScoped<ISalesApplicationService, SalesApplicationService>();
     }
 
     private static void AdicionarHealthChecks(this IServiceCollection servicos)

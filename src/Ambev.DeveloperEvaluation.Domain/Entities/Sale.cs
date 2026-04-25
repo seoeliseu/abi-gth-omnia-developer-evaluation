@@ -10,11 +10,11 @@ public class Sale
 
     public Guid Id { get; }
     public string Numero { get; }
-    public DateTimeOffset DataVenda { get; }
-    public long ClienteId { get; }
-    public string ClienteNome { get; }
-    public long FilialId { get; }
-    public string FilialNome { get; }
+    public DateTimeOffset DataVenda { get; private set; }
+    public long ClienteId { get; private set; }
+    public string ClienteNome { get; private set; }
+    public long FilialId { get; private set; }
+    public string FilialNome { get; private set; }
     public bool Cancelada { get; private set; }
     public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
@@ -78,6 +78,65 @@ public class Sale
         RegistrarEvento(new SaleModifiedEvent(Id, Numero));
 
         return item;
+    }
+
+    public void AtualizarCabecalho(
+        DateTimeOffset dataVenda,
+        long clienteId,
+        string clienteNome,
+        long filialId,
+        string filialNome)
+    {
+        GarantirVendaAtiva();
+
+        if (clienteId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(clienteId), "O cliente deve possuir um identificador válido.");
+        }
+
+        if (string.IsNullOrWhiteSpace(clienteNome))
+        {
+            throw new ArgumentException("O nome do cliente é obrigatório.", nameof(clienteNome));
+        }
+
+        if (filialId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(filialId), "A filial deve possuir um identificador válido.");
+        }
+
+        if (string.IsNullOrWhiteSpace(filialNome))
+        {
+            throw new ArgumentException("O nome da filial é obrigatório.", nameof(filialNome));
+        }
+
+        DataVenda = dataVenda;
+        ClienteId = clienteId;
+        ClienteNome = clienteNome.Trim();
+        FilialId = filialId;
+        FilialNome = filialNome.Trim();
+        RegistrarEvento(new SaleModifiedEvent(Id, Numero));
+    }
+
+    public SaleItem AdicionarOuAtualizarItem(long productId, string productTitle, int quantidade, decimal valorUnitario)
+    {
+        GarantirVendaAtiva();
+
+        var itemExistente = _items.FirstOrDefault(item => item.ProductId == productId && !item.Cancelado);
+        if (itemExistente is null)
+        {
+            return AdicionarItem(productId, productTitle, quantidade, valorUnitario);
+        }
+
+        if (itemExistente.ProductTitle != productTitle || itemExistente.ValorUnitario != valorUnitario)
+        {
+            itemExistente.Cancelar();
+            RegistrarEvento(new ItemCancelledEvent(Id, itemExistente.Id, itemExistente.ProductId));
+            return AdicionarItem(productId, productTitle, quantidade, valorUnitario);
+        }
+
+        itemExistente.AtualizarQuantidade(quantidade);
+        RegistrarEvento(new SaleModifiedEvent(Id, Numero));
+        return itemExistente;
     }
 
     public void CancelarItem(Guid saleItemId)

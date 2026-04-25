@@ -67,18 +67,18 @@ Commits sugeridos:
 
 ## Épico 4. Aplicação e API
 
-- [ ] Criar casos de uso de criar venda.
-- [ ] Criar casos de uso de buscar por id e listar vendas.
-- [ ] Criar casos de uso de atualizar venda.
-- [ ] Criar casos de uso de cancelar venda e item.
-- [ ] Implementar paginação, ordenação e filtros.
-- [ ] Mapear `Result<T>` para respostas HTTP.
-- [ ] Implementar contrato de erro único com `ProblemDetails` ou equivalente.
-- [ ] Configurar rate limiting por política.
-- [ ] Expor endpoints `/health/live` e `/health/ready`.
-- [ ] Propagar `correlationId` e `traceId` em requests, logs e respostas.
-- [ ] Implementar idempotência para comandos críticos de criação e cancelamento.
-- [ ] Definir política de timeout e cancelamento cooperativo.
+- [x] Criar casos de uso de criar venda.
+- [x] Criar casos de uso de buscar por id e listar vendas.
+- [x] Criar casos de uso de atualizar venda.
+- [x] Criar casos de uso de cancelar venda e item.
+- [x] Implementar paginação, ordenação e filtros.
+- [x] Mapear `Result<T>` para respostas HTTP.
+- [x] Implementar contrato de erro único com `ProblemDetails` ou equivalente.
+- [x] Configurar rate limiting por política.
+- [x] Expor endpoints `/health/live` e `/health/ready`.
+- [x] Propagar `correlationId` e `traceId` em requests, logs e respostas.
+- [x] Implementar idempotência para comandos críticos de criação e cancelamento.
+- [x] Definir política de timeout e cancelamento cooperativo.
 
 Commits sugeridos:
 
