@@ -36,17 +36,29 @@ Commits sugeridos:
 - `feat: adiciona health checks iniciais`
 - `feat: configura integracao inicial com rabbitmq`
 
-## Épico 3. Domínio de vendas
+## Épico 3. Base dos micro-serviços
 
-- [ ] Modelar entidade `Sale`.
-- [ ] Modelar entidade `SaleItem`.
-- [ ] Implementar regras de desconto por faixa.
-- [ ] Implementar restrição máxima de 20 itens idênticos.
-- [ ] Implementar cancelamento de item e venda.
-- [ ] Criar eventos de domínio e integração.
+- [x] Definir fronteiras e contratos do `Sales Service`.
+- [x] Definir fronteiras e contratos do `Products Service`.
+- [x] Definir fronteiras e contratos do `Carts Service`.
+- [x] Definir fronteiras e contratos do `Users Service`.
+- [x] Definir fronteiras e contratos do `Auth Service`.
+- [x] Estruturar a solução para comportar os cinco serviços do desafio sem quebrar o prefixo `Ambev.DeveloperEvaluation.*`.
+- [x] Definir estratégia de comunicação entre serviços e responsabilidades síncronas vs. assíncronas.
+
+### Recorte inicial do `Sales Service`
+
+- [x] Modelar entidade `Sale`.
+- [x] Modelar entidade `SaleItem`.
+- [x] Implementar regras de desconto por faixa.
+- [x] Implementar restrição máxima de 20 itens idênticos.
+- [x] Implementar cancelamento de item e venda.
+- [x] Criar eventos de domínio e integração.
 
 Commits sugeridos:
 
+- `chore: define fronteiras dos cinco microservicos`
+- `chore: estrutura solution para os cinco servicos`
 - `feat: adiciona entidade sale`
 - `feat: adiciona entidade sale item`
 - `feat: implementa regras de desconto`
@@ -78,6 +90,23 @@ Commits sugeridos:
 - `feat: implementa problem details e correlacao`
 - `feat: configura rate limiting e endpoints de health`
 - `feat: implementa idempotencia em comandos criticos`
+
+## Épico 4.1 Demais APIs do desafio
+
+- [ ] Implementar CRUD de `Products` conforme a spec.
+- [ ] Implementar endpoint de categorias e consulta por categoria em `Products`.
+- [ ] Implementar CRUD de `Carts` conforme a spec.
+- [ ] Implementar CRUD de `Users` conforme a spec.
+- [ ] Implementar `POST /auth/login` conforme a spec.
+- [ ] Garantir paginação, ordenação, filtros e contrato de erro compatíveis nos quatro serviços de apoio.
+
+Commits sugeridos:
+
+- `feat: implementa api de products`
+- `feat: implementa api de carts`
+- `feat: implementa api de users`
+- `feat: implementa api de auth`
+- `feat: alinha contratos das apis auxiliares com a spec`
 
 ## Épico 5. Persistência
 
