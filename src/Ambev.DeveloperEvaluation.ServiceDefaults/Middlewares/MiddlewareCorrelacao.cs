@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using Ambev.DeveloperEvaluation.Common.Observabilidade;
+using Microsoft.AspNetCore.Http;
 using Serilog.Context;
 
-namespace Ambev.DeveloperEvaluation.WebApi.Middlewares;
+namespace Ambev.DeveloperEvaluation.ServiceDefaults.Middlewares;
 
 public sealed class MiddlewareCorrelacao
 {

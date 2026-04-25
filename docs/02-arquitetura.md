@@ -66,13 +66,21 @@ O template de referência já traz uma separação importante que deve ser prese
 - `Ambev.DeveloperEvaluation.Common`: componentes compartilhados, utilitários transversais, segurança, logging, validação e health checks.
 - `Ambev.DeveloperEvaluation.ORM`: persistência, mapeamentos, contexto de dados, repositórios e integrações com bancos.
 - `Ambev.DeveloperEvaluation.IoC`: composição da aplicação, registro de dependências e configuração de módulos.
-- `Ambev.DeveloperEvaluation.WebApi`: exposição HTTP, controllers/endpoints, middlewares e configuração da API.
+- `Ambev.DeveloperEvaluation.ServiceDefaults`: base compartilhada de borda HTTP com correlação, logging, health checks e mapeamento de `Result<T>`.
 
-Na arquitetura alvo, esses projetos deixam de ser apenas detalhes de infraestrutura do template e passam a compor a fundação padrão de cada serviço ou módulo principal da solução.
+Na arquitetura atual do repositório, os hosts HTTP já foram materializados por contexto e a solução não depende apenas de um `WebApi` genérico para expor todos os contratos.
 
-Importante: `Ambev.DeveloperEvaluation.WebApi` é o host genérico herdado do template e, na Fase 1, pode funcionar apenas como casca do backend modular único. Ele não deve ser tratado automaticamente como `GatewayApi`.
+Hosts atuais por serviço:
 
-Quando houver separação física por serviço, a evolução esperada é explicitar hosts por contexto, por exemplo:
+- `Ambev.DeveloperEvaluation.Sales.WebApi`
+- `Ambev.DeveloperEvaluation.Products.WebApi`
+- `Ambev.DeveloperEvaluation.Carts.WebApi`
+- `Ambev.DeveloperEvaluation.Users.WebApi`
+- `Ambev.DeveloperEvaluation.Auth.WebApi`
+
+Esses hosts usam uma base compartilhada apenas para preocupações transversais de borda, como correlação, logging, health checks e mapeamento HTTP de `Result<T>`. O contrato HTTP e o endpoint publicado pertencem ao projeto do próprio serviço.
+
+Não existe mais um host HTTP genérico central na estrutura alvo. A exposição HTTP acontece diretamente nos hosts de cada serviço:
 
 - `Ambev.DeveloperEvaluation.Sales.WebApi`
 - `Ambev.DeveloperEvaluation.Products.WebApi`

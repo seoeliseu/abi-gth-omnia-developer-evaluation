@@ -1,10 +1,10 @@
 using Ambev.DeveloperEvaluation.Application.Users.Contracts;
-using Ambev.DeveloperEvaluation.WebApi.Resultados;
+using Ambev.DeveloperEvaluation.ServiceDefaults.Resultados;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace Ambev.DeveloperEvaluation.WebApi.Controllers;
+namespace Ambev.DeveloperEvaluation.Users.WebApi.Controllers;
 
 [ApiController]
 [Route("api/users")]

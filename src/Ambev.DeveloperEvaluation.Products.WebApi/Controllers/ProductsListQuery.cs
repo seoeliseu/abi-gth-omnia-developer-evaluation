@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Ambev.DeveloperEvaluation.WebApi.Controllers;
+namespace Ambev.DeveloperEvaluation.Products.WebApi.Controllers;
 
 public sealed class ProductsListQuery
 {

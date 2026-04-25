@@ -1,9 +1,10 @@
 using System.Diagnostics;
 using Ambev.DeveloperEvaluation.Common.Observabilidade;
 using Ambev.DeveloperEvaluation.Common.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Ambev.DeveloperEvaluation.WebApi.Resultados;
+namespace Ambev.DeveloperEvaluation.ServiceDefaults.Resultados;
 
 public static class ResultHttpExtensions
 {

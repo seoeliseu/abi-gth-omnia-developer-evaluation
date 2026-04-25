@@ -45,7 +45,7 @@ Na Fase 1, como a entrega ainda é um backend modular único, a comunicação s�
 - Naming dos projetos seguindo o padrão `Ambev.DeveloperEvaluation.*`.
 - MongoDB assumindo desde o início o papel de `event log` e auditoria da venda no `Sales Service`.
 - Os cinco serviços da spec já devem estar refletidos em módulos, contratos e backlog, mesmo antes da extração física por deploy.
-- O projeto `Ambev.DeveloperEvaluation.WebApi` pode existir apenas como host temporário da entrega inicial; a separação principal neste estágio acontece por módulos e contratos internos.
+- A exposição HTTP da solução acontece diretamente nos hosts `Sales`, `Products`, `Carts`, `Users` e `Auth`; não há host genérico central na estrutura final.
 
 ### Fase 2
 

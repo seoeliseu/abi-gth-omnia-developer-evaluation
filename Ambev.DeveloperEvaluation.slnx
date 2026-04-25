@@ -1,11 +1,16 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Ambev.DeveloperEvaluation.Application/Ambev.DeveloperEvaluation.Application.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.Auth.WebApi/Ambev.DeveloperEvaluation.Auth.WebApi.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.Carts.WebApi/Ambev.DeveloperEvaluation.Carts.WebApi.csproj" />
     <Project Path="src/Ambev.DeveloperEvaluation.Common/Ambev.DeveloperEvaluation.Common.csproj" />
     <Project Path="src/Ambev.DeveloperEvaluation.Domain/Ambev.DeveloperEvaluation.Domain.csproj" />
     <Project Path="src/Ambev.DeveloperEvaluation.IoC/Ambev.DeveloperEvaluation.IoC.csproj" />
     <Project Path="src/Ambev.DeveloperEvaluation.ORM/Ambev.DeveloperEvaluation.ORM.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.WebApi/Ambev.DeveloperEvaluation.WebApi.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.Products.WebApi/Ambev.DeveloperEvaluation.Products.WebApi.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.Sales.WebApi/Ambev.DeveloperEvaluation.Sales.WebApi.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.ServiceDefaults/Ambev.DeveloperEvaluation.ServiceDefaults.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.Users.WebApi/Ambev.DeveloperEvaluation.Users.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Ambev.DeveloperEvaluation.Functional/Ambev.DeveloperEvaluation.Functional.csproj" />
