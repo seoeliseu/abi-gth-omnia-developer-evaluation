@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
@@ -19,7 +20,7 @@ namespace Ambev.DeveloperEvaluation.ServiceDefaults.Hosting;
 
 public static class ServiceApiHostExtensions
 {
-    public static WebApplication BuildServiceApi(string[] args, string serviceName)
+    public static WebApplication BuildServiceApi(string[] args, string serviceName, Action<IServiceCollection, IConfiguration>? configureServices = null)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +80,8 @@ public static class ServiceApiHostExtensions
             opcoes.AddPolicy("sales-consultas", TimeSpan.FromSeconds(15));
             opcoes.AddPolicy("sales-comandos", TimeSpan.FromSeconds(30));
         });
-        builder.Services.AdicionarServicosTransversais(builder.Configuration);
+        builder.Services.AdicionarInfraestruturaCompartilhada(builder.Configuration);
+        configureServices?.Invoke(builder.Services, builder.Configuration);
 
         var app = builder.Build();
 

@@ -1,6 +1,10 @@
 using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
+using Ambev.DeveloperEvaluation.Application.Auth.Contracts;
+using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
+using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Services;
+using Ambev.DeveloperEvaluation.Application.Users.Contracts;
 using Ambev.DeveloperEvaluation.ORM.HealthChecks;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Microsoft.Extensions.Configuration;
@@ -15,17 +19,55 @@ public static class ExtensoesInjecaoDependencia
 {
     public static IServiceCollection AdicionarServicosTransversais(this IServiceCollection servicos, IConfiguration configuracao)
     {
-        servicos.AdicionarPersistencia(configuracao);
-        servicos.AdicionarServicosAplicacao();
-        servicos.AdicionarHealthChecks();
+        servicos.AdicionarInfraestruturaCompartilhada(configuracao);
+        servicos.AdicionarServicosAplicacaoSales();
+        servicos.AdicionarServicosAplicacaoProducts();
+        servicos.AdicionarServicosAplicacaoUsers();
+        servicos.AdicionarServicosAplicacaoCarts();
+        servicos.AdicionarServicosAplicacaoAuth();
         servicos.AdicionarMensageria(configuracao);
 
         return servicos;
     }
 
-    private static void AdicionarServicosAplicacao(this IServiceCollection servicos)
+    public static IServiceCollection AdicionarInfraestruturaCompartilhada(this IServiceCollection servicos, IConfiguration configuracao)
     {
+        servicos.AdicionarInfraestruturaPersistencia(configuracao);
+        servicos.AdicionarHealthChecks();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarServicosAplicacaoSales(this IServiceCollection servicos)
+    {
+        servicos.AdicionarPersistenciaSales();
+        servicos.AdicionarPersistenciaProducts();
+        servicos.AdicionarPersistenciaUsers();
         servicos.AddScoped<ISalesApplicationService, SalesApplicationService>();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarServicosAplicacaoProducts(this IServiceCollection servicos)
+    {
+        servicos.AdicionarPersistenciaProducts();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarServicosAplicacaoUsers(this IServiceCollection servicos)
+    {
+        servicos.AdicionarPersistenciaUsers();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarServicosAplicacaoCarts(this IServiceCollection servicos)
+    {
+        servicos.AdicionarPersistenciaCarts();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarServicosAplicacaoAuth(this IServiceCollection servicos)
+    {
+        servicos.AdicionarPersistenciaAuth();
+        return servicos;
     }
 
     private static void AdicionarHealthChecks(this IServiceCollection servicos)

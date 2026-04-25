@@ -19,6 +19,17 @@ public static class PersistenceServiceCollectionExtensions
 {
     public static IServiceCollection AdicionarPersistencia(this IServiceCollection servicos, IConfiguration configuracao)
     {
+        return servicos
+            .AdicionarInfraestruturaPersistencia(configuracao)
+            .AdicionarPersistenciaSales()
+            .AdicionarPersistenciaProducts()
+            .AdicionarPersistenciaUsers()
+            .AdicionarPersistenciaCarts()
+            .AdicionarPersistenciaAuth();
+    }
+
+    public static IServiceCollection AdicionarInfraestruturaPersistencia(this IServiceCollection servicos, IConfiguration configuracao)
+    {
         var connectionStringPostgres = configuracao.GetConnectionString("Postgres")
             ?? throw new InvalidOperationException("A connection string 'Postgres' não foi configurada.");
 
@@ -37,16 +48,41 @@ public static class PersistenceServiceCollectionExtensions
             return cliente.GetDatabase(databaseName);
         });
 
-        servicos.AddScoped<ISaleRepository, SaleRepositoryEf>();
-        servicos.AddScoped<IIdempotencyStore, PostgresIdempotencyStore>();
-        servicos.AddScoped<IProductsService, ProductsServicePersistente>();
-        servicos.AddScoped<IUsersService, UsersServicePersistente>();
-        servicos.AddScoped<ICartsService, CartsServicePersistente>();
-        servicos.AddScoped<IAuthService, AuthServicePersistente>();
         servicos.AddScoped<IProcessedMessageStore, ProcessedMessageStorePostgres>();
         servicos.AddScoped<ISaleAuditStore, SaleAuditStoreMongo>();
         servicos.AddScoped<MongoReadinessHealthCheck>();
 
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarPersistenciaSales(this IServiceCollection servicos)
+    {
+        servicos.AddScoped<ISaleRepository, SaleRepositoryEf>();
+        servicos.AddScoped<IIdempotencyStore, PostgresIdempotencyStore>();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarPersistenciaProducts(this IServiceCollection servicos)
+    {
+        servicos.AddScoped<IProductsService, ProductsServicePersistente>();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarPersistenciaUsers(this IServiceCollection servicos)
+    {
+        servicos.AddScoped<IUsersService, UsersServicePersistente>();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarPersistenciaCarts(this IServiceCollection servicos)
+    {
+        servicos.AddScoped<ICartsService, CartsServicePersistente>();
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarPersistenciaAuth(this IServiceCollection servicos)
+    {
+        servicos.AddScoped<IAuthService, AuthServicePersistente>();
         return servicos;
     }
 
