@@ -148,11 +148,11 @@ Commits sugeridos:
 - [ ] Criar testes para limites de quantidade.
 - [ ] Criar testes dos handlers principais.
 - [ ] Criar ao menos um teste de integração do fluxo de criação.
-- [ ] Criar infraestrutura base de Testcontainers para PostgreSQL.
+- [x] Criar infraestrutura base de Testcontainers para PostgreSQL.
 - [ ] Criar infraestrutura base de Testcontainers para MongoDB.
-- [ ] Criar infraestrutura base de Testcontainers para RabbitMQ.
+- [x] Criar infraestrutura base de Testcontainers para RabbitMQ.
 - [ ] Criar testes de integração de persistência com banco real.
-- [ ] Criar testes de integração de mensageria com broker real.
+- [x] Criar testes de integração de mensageria com broker real.
 - [ ] Criar testes funcionais da API com `WebApplicationFactory` e Testcontainers.
 
 Commits sugeridos:
