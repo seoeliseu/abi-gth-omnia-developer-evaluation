@@ -4,5 +4,9 @@ using Ambev.DeveloperEvaluation.IoC;
 var app = ServiceApiHostExtensions.BuildServiceApi(
 	args,
 	"Ambev.DeveloperEvaluation.Carts.WebApi",
-	(services, _) => services.AdicionarServicosAplicacaoCarts());
+	(services, configuration) =>
+	{
+		services.AdicionarServicosAplicacaoCarts();
+		services.AdicionarMensageriaCarts(configuration);
+	});
 await app.RunAsync();

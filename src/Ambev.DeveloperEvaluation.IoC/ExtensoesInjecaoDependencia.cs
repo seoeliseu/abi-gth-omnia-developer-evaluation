@@ -5,6 +5,7 @@ using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Services;
 using Ambev.DeveloperEvaluation.Application.Users.Contracts;
+using Ambev.DeveloperEvaluation.IoC.Mensageria;
 using Ambev.DeveloperEvaluation.ORM.HealthChecks;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +26,7 @@ public static class ExtensoesInjecaoDependencia
         servicos.AdicionarServicosAplicacaoUsers();
         servicos.AdicionarServicosAplicacaoCarts();
         servicos.AdicionarServicosAplicacaoAuth();
-        servicos.AdicionarMensageria(configuracao);
+        servicos.TryAdicionarTransporteMensageria(configuracao);
 
         return servicos;
     }
@@ -70,6 +71,40 @@ public static class ExtensoesInjecaoDependencia
         return servicos;
     }
 
+    public static IServiceCollection AdicionarMensageriaSales(this IServiceCollection servicos, IConfiguration configuracao)
+    {
+        if (servicos.TryAdicionarTransporteMensageria(configuracao))
+        {
+            servicos.AddHostedService<SalesOutboxPublisherWorker>();
+        }
+
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarMensageriaProducts(this IServiceCollection servicos, IConfiguration configuracao)
+    {
+        servicos.TryAdicionarTransporteMensageria(configuracao);
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarMensageriaUsers(this IServiceCollection servicos, IConfiguration configuracao)
+    {
+        servicos.TryAdicionarTransporteMensageria(configuracao);
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarMensageriaCarts(this IServiceCollection servicos, IConfiguration configuracao)
+    {
+        servicos.TryAdicionarTransporteMensageria(configuracao);
+        return servicos;
+    }
+
+    public static IServiceCollection AdicionarMensageriaAuth(this IServiceCollection servicos, IConfiguration configuracao)
+    {
+        servicos.TryAdicionarTransporteMensageria(configuracao);
+        return servicos;
+    }
+
     private static void AdicionarHealthChecks(this IServiceCollection servicos)
     {
         servicos
@@ -80,18 +115,20 @@ public static class ExtensoesInjecaoDependencia
             .AddCheck<MongoReadinessHealthCheck>("mongodb", tags: ["ready"]);
     }
 
-    private static void AdicionarMensageria(this IServiceCollection servicos, IConfiguration configuracao)
+    private static bool TryAdicionarTransporteMensageria(this IServiceCollection servicos, IConfiguration configuracao)
     {
         var stringConexao = configuracao["RabbitMq:ConnectionString"];
         var nomeFila = configuracao["RabbitMq:QueueName"];
 
         if (string.IsNullOrWhiteSpace(stringConexao) || string.IsNullOrWhiteSpace(nomeFila))
         {
-            return;
+            return false;
         }
 
         servicos.AddRebus(
             configurador => configurador.Transport(t => t.UseRabbitMq(stringConexao, nomeFila))
         );
+
+        return true;
     }
 }

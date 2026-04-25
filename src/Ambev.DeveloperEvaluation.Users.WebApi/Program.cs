@@ -4,5 +4,9 @@ using Ambev.DeveloperEvaluation.IoC;
 var app = ServiceApiHostExtensions.BuildServiceApi(
 	args,
 	"Ambev.DeveloperEvaluation.Users.WebApi",
-	(services, _) => services.AdicionarServicosAplicacaoUsers());
+	(services, configuration) =>
+	{
+		services.AdicionarServicosAplicacaoUsers();
+		services.AdicionarMensageriaUsers(configuration);
+	});
 await app.RunAsync();
