@@ -8,7 +8,11 @@ Garantir que o backend seja executável localmente com dependências externas e 
 
 O `docker-compose.yml` do repositório principal deverá orquestrar:
 
-- API/backend.
+- `Sales API`.
+- `Products API`.
+- `Carts API`.
+- `Users API`.
+- `Auth API`.
 - PostgreSQL.
 - MongoDB.
 - RabbitMQ.
@@ -16,7 +20,7 @@ O `docker-compose.yml` do repositório principal deverá orquestrar:
 
 ## Requisitos de Imagem
 
-- `Dockerfile` multi-stage para build e runtime.
+- `Dockerfile` multi-stage reutilizável para build e runtime dos hosts `*.WebApi`.
 - Variáveis de ambiente externas para connection strings, credenciais e broker.
 - Health check configurado para containers críticos.
 
@@ -25,10 +29,10 @@ O `docker-compose.yml` do repositório principal deverá orquestrar:
 Manter uma pasta `ops/k8s/` com artefatos base:
 
 - `namespace.yaml`
-- `configmap.yaml`
+- `configmap.yaml` com configuração por serviço.
 - `secrets.example.yaml`
-- `deployment-api.yaml`
-- `service-api.yaml`
+- `deployment-api.yaml` com deployments dos cinco serviços.
+- `service-api.yaml` com services dos cinco serviços.
 - `ingress.yaml` opcional
 - `job-migrations.yaml` opcional
 

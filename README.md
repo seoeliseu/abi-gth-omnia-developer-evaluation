@@ -2,6 +2,15 @@
 
 Backend de gestão de vendas para desafio técnico, planejado com .NET 8, DDD, `Result<T>`, PostgreSQL, MongoDB, RabbitMQ e prontidão para Docker/Kubernetes.
 
+## Hosts HTTP
+
+- `Ambev.DeveloperEvaluation.Sales.WebApi`
+- `Ambev.DeveloperEvaluation.Products.WebApi`
+- `Ambev.DeveloperEvaluation.Carts.WebApi`
+- `Ambev.DeveloperEvaluation.Users.WebApi`
+- `Ambev.DeveloperEvaluation.Auth.WebApi`
+- `Ambev.DeveloperEvaluation.ServiceDefaults` como base compartilhada de borda HTTP
+
 ## Estrutura do repositório
 
 - `docs/`: documentação funcional, arquitetural e backlog.
@@ -48,3 +57,9 @@ Backend de gestão de vendas para desafio técnico, planejado com .NET 8, DDD, `
 2. Implementar `Result<T>` e contratos compartilhados.
 3. Modelar o domínio de vendas e suas regras.
 4. Configurar persistência, mensageria e testes.
+
+## Execução com contêineres
+
+- `docker compose up --build` para subir os cinco serviços, PostgreSQL, MongoDB, RabbitMQ e Seq.
+- Portas locais das APIs: `8081` a `8085`.
+- Seq disponível em `http://localhost:5341` e RabbitMQ Management em `http://localhost:15672`.

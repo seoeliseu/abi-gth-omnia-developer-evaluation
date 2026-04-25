@@ -1,0 +1,198 @@
+services:
+  sales-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Sales.WebApi/Ambev.DeveloperEvaluation.Sales.WebApi.csproj
+        SERVICE_DLL: Ambev.DeveloperEvaluation.Sales.WebApi.dll
+    image: developer-evaluation-sales-api:latest
+    container_name: developer-evaluation-sales-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Observabilidade__SeqUrl: http://seq:5341
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
+      MongoDb__Database: developer_evaluation
+      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
+      RabbitMq__QueueName: developer-evaluation.sales.webapi
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    ports:
+      - "8081:8080"
+
+  products-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Products.WebApi/Ambev.DeveloperEvaluation.Products.WebApi.csproj
+        SERVICE_DLL: Ambev.DeveloperEvaluation.Products.WebApi.dll
+    image: developer-evaluation-products-api:latest
+    container_name: developer-evaluation-products-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Observabilidade__SeqUrl: http://seq:5341
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
+      MongoDb__Database: developer_evaluation
+      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
+      RabbitMq__QueueName: developer-evaluation.products.webapi
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    ports:
+      - "8082:8080"
+
+  carts-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Carts.WebApi/Ambev.DeveloperEvaluation.Carts.WebApi.csproj
+        SERVICE_DLL: Ambev.DeveloperEvaluation.Carts.WebApi.dll
+    image: developer-evaluation-carts-api:latest
+    container_name: developer-evaluation-carts-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Observabilidade__SeqUrl: http://seq:5341
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
+      MongoDb__Database: developer_evaluation
+      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
+      RabbitMq__QueueName: developer-evaluation.carts.webapi
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    ports:
+      - "8083:8080"
+
+  users-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Users.WebApi/Ambev.DeveloperEvaluation.Users.WebApi.csproj
+        SERVICE_DLL: Ambev.DeveloperEvaluation.Users.WebApi.dll
+    image: developer-evaluation-users-api:latest
+    container_name: developer-evaluation-users-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Observabilidade__SeqUrl: http://seq:5341
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
+      MongoDb__Database: developer_evaluation
+      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
+      RabbitMq__QueueName: developer-evaluation.users.webapi
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    ports:
+      - "8084:8080"
+
+  auth-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Auth.WebApi/Ambev.DeveloperEvaluation.Auth.WebApi.csproj
+        SERVICE_DLL: Ambev.DeveloperEvaluation.Auth.WebApi.dll
+    image: developer-evaluation-auth-api:latest
+    container_name: developer-evaluation-auth-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Observabilidade__SeqUrl: http://seq:5341
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
+      MongoDb__Database: developer_evaluation
+      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
+      RabbitMq__QueueName: developer-evaluation.auth.webapi
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    ports:
+      - "8085:8080"
+
+  postgres:
+    image: postgres:16
+    container_name: developer-evaluation-postgres
+    environment:
+      POSTGRES_DB: developer_evaluation
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d developer_evaluation"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mongodb:
+    image: mongo:7
+    container_name: developer-evaluation-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: developer-evaluation-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  seq:
+    image: datalust/seq:2024.3
+    container_name: developer-evaluation-seq
+    environment:
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5341:5341"
+      - "8080:80"
+    volumes:
+      - seq_data:/data
+
+volumes:
+  postgres_data:
+  mongo_data:
+  seq_data:
