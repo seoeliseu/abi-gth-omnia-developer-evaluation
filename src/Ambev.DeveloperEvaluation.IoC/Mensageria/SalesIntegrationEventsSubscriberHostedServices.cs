@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Events;
+using Ambev.DeveloperEvaluation.Common.Resilience;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rebus.Bus;
@@ -8,11 +9,13 @@ namespace Ambev.DeveloperEvaluation.IoC.Mensageria;
 public abstract class SalesIntegrationEventsSubscriberHostedServiceBase : IHostedService
 {
     private readonly IBus _bus;
+    private readonly IIntegrationResilienceExecutor _resilienceExecutor;
     private readonly ILogger _logger;
 
-    protected SalesIntegrationEventsSubscriberHostedServiceBase(IBus bus, ILogger logger)
+    protected SalesIntegrationEventsSubscriberHostedServiceBase(IBus bus, IIntegrationResilienceExecutor resilienceExecutor, ILogger logger)
     {
         _bus = bus;
+        _resilienceExecutor = resilienceExecutor;
         _logger = logger;
     }
 
@@ -20,10 +23,16 @@ public abstract class SalesIntegrationEventsSubscriberHostedServiceBase : IHoste
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _bus.Subscribe<SaleCreatedEvent>();
-        await _bus.Subscribe<SaleModifiedEvent>();
-        await _bus.Subscribe<SaleCancelledEvent>();
-        await _bus.Subscribe<ItemCancelledEvent>();
+        await _resilienceExecutor.ExecuteAsync(
+            IntegrationResiliencePipelineNames.RabbitMqSubscribe,
+            async _ =>
+            {
+                await _bus.Subscribe<SaleCreatedEvent>();
+                await _bus.Subscribe<SaleModifiedEvent>();
+                await _bus.Subscribe<SaleCancelledEvent>();
+                await _bus.Subscribe<ItemCancelledEvent>();
+            },
+            cancellationToken);
 
         _logger.LogInformation("{ServiceName} inscrito nos eventos de integração de vendas.", ServiceName);
     }
@@ -38,8 +47,9 @@ public sealed class ProductsSalesEventsSubscriberHostedService : SalesIntegratio
 {
     public ProductsSalesEventsSubscriberHostedService(
         IBus bus,
+        IIntegrationResilienceExecutor resilienceExecutor,
         ILogger<ProductsSalesEventsSubscriberHostedService> logger)
-        : base(bus, logger)
+        : base(bus, resilienceExecutor, logger)
     {
     }
 
@@ -50,8 +60,9 @@ public sealed class CartsSalesEventsSubscriberHostedService : SalesIntegrationEv
 {
     public CartsSalesEventsSubscriberHostedService(
         IBus bus,
+        IIntegrationResilienceExecutor resilienceExecutor,
         ILogger<CartsSalesEventsSubscriberHostedService> logger)
-        : base(bus, logger)
+        : base(bus, resilienceExecutor, logger)
     {
     }
 
@@ -62,8 +73,9 @@ public sealed class UsersSalesEventsSubscriberHostedService : SalesIntegrationEv
 {
     public UsersSalesEventsSubscriberHostedService(
         IBus bus,
+        IIntegrationResilienceExecutor resilienceExecutor,
         ILogger<UsersSalesEventsSubscriberHostedService> logger)
-        : base(bus, logger)
+        : base(bus, resilienceExecutor, logger)
     {
     }
 

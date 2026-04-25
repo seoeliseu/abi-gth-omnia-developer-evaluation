@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Ambev.DeveloperEvaluation.Common.Resilience;
 using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
@@ -15,11 +16,16 @@ public sealed class SalesOutboxPublisherWorker : BackgroundService
     private static readonly TimeSpan IntervaloProcessamento = TimeSpan.FromSeconds(5);
     private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
 
+    private readonly IIntegrationResilienceExecutor _resilienceExecutor;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<SalesOutboxPublisherWorker> _logger;
 
-    public SalesOutboxPublisherWorker(IServiceScopeFactory scopeFactory, ILogger<SalesOutboxPublisherWorker> logger)
+    public SalesOutboxPublisherWorker(
+        IIntegrationResilienceExecutor resilienceExecutor,
+        IServiceScopeFactory scopeFactory,
+        ILogger<SalesOutboxPublisherWorker> logger)
     {
+        _resilienceExecutor = resilienceExecutor;
         _scopeFactory = scopeFactory;
         _logger = logger;
     }
@@ -78,13 +84,16 @@ public sealed class SalesOutboxPublisherWorker : BackgroundService
                 continue;
             }
 
-            await bus.Publish(evento, new Dictionary<string, string>
-            {
-                ["outbox-id"] = mensagem.Id.ToString("N"),
-                ["aggregate-type"] = mensagem.AggregateType,
-                ["aggregate-id"] = mensagem.AggregateId,
-                ["event-type"] = mensagem.EventType
-            });
+            await _resilienceExecutor.ExecuteAsync(
+                IntegrationResiliencePipelineNames.RabbitMqPublish,
+                _ => new ValueTask(bus.Publish(evento, new Dictionary<string, string>
+                {
+                    ["outbox-id"] = mensagem.Id.ToString("N"),
+                    ["aggregate-type"] = mensagem.AggregateType,
+                    ["aggregate-id"] = mensagem.AggregateId,
+                    ["event-type"] = mensagem.EventType
+                })),
+                cancellationToken);
 
             mensagem.PublishedAt = DateTimeOffset.UtcNow;
         }

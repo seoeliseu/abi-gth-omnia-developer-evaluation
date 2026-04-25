@@ -5,8 +5,10 @@ using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Services;
 using Ambev.DeveloperEvaluation.Application.Users.Contracts;
+using Ambev.DeveloperEvaluation.Common.Resilience;
 using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.IoC.Mensageria;
+using Ambev.DeveloperEvaluation.IoC.Resilience;
 using Ambev.DeveloperEvaluation.ORM.HealthChecks;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +37,7 @@ public static class ExtensoesInjecaoDependencia
 
     public static IServiceCollection AdicionarInfraestruturaCompartilhada(this IServiceCollection servicos, IConfiguration configuracao)
     {
+        servicos.AdicionarResilienciaIntegracoes();
         servicos.AdicionarInfraestruturaPersistencia(configuracao);
         servicos.AdicionarHealthChecks();
         return servicos;
@@ -130,6 +133,12 @@ public static class ExtensoesInjecaoDependencia
             .AddCheck("aplicacao_pronta", () => HealthCheckResult.Healthy(), tags: ["ready"])
             .AddDbContextCheck<DeveloperEvaluationDbContext>("postgresql", tags: ["ready"])
             .AddCheck<MongoReadinessHealthCheck>("mongodb", tags: ["ready"]);
+    }
+
+    private static IServiceCollection AdicionarResilienciaIntegracoes(this IServiceCollection servicos)
+    {
+        servicos.AddSingleton<IIntegrationResilienceExecutor, PollyIntegrationResilienceExecutor>();
+        return servicos;
     }
 
     private static bool TryAdicionarTransporteMensageria(this IServiceCollection servicos, IConfiguration configuracao)

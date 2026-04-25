@@ -131,10 +131,10 @@ Commits sugeridos:
 
 ## Épico 5.1 Resiliência e integrações
 
-- [ ] Configurar Polly centralizado na composição da aplicação.
-- [ ] Aplicar retry com backoff e jitter nas integrações externas.
-- [ ] Aplicar timeout e circuit breaker em chamadas suscetíveis a falhas transitórias.
-- [ ] Instrumentar logs e métricas das políticas de resiliência.
+- [x] Configurar Polly centralizado na composição da aplicação.
+- [x] Aplicar retry com backoff e jitter nas integrações externas.
+- [x] Aplicar timeout e circuit breaker em chamadas suscetíveis a falhas transitórias.
+- [x] Instrumentar logs e métricas das políticas de resiliência.
 
 Commits sugeridos:
 
