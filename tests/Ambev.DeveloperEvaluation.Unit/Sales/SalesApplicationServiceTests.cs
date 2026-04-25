@@ -193,18 +193,26 @@ public class SalesApplicationServiceTests
 
     private sealed class FakeIdempotencyStore : IIdempotencyStore
     {
-        private readonly Dictionary<string, IdempotencyEntry> _entradas = [];
+        private readonly Dictionary<string, RegistroIdempotencia> _entradas = [];
 
-        public bool TryGet(string escopo, string chave, out IdempotencyEntry? entrada)
+        public bool TryGet<T>(string escopo, string chave, out IdempotencyEntry<T>? entrada)
         {
             var existe = _entradas.TryGetValue($"{escopo}:{chave}", out var valor);
-            entrada = valor;
-            return existe;
+            if (existe && valor is not null && valor.Resultado is T resultadoTipado)
+            {
+                entrada = new IdempotencyEntry<T>(valor.Fingerprint, resultadoTipado, valor.CriadoEm);
+                return true;
+            }
+
+            entrada = null;
+            return false;
         }
 
-        public void Set(string escopo, string chave, string fingerprint, object resultado)
+        public void Set<T>(string escopo, string chave, string fingerprint, T resultado)
         {
-            _entradas[$"{escopo}:{chave}"] = new IdempotencyEntry(fingerprint, resultado, DateTimeOffset.UtcNow);
+            _entradas[$"{escopo}:{chave}"] = new RegistroIdempotencia(fingerprint, resultado, DateTimeOffset.UtcNow);
         }
+
+        private sealed record RegistroIdempotencia(string Fingerprint, object? Resultado, DateTimeOffset CriadoEm);
     }
 }

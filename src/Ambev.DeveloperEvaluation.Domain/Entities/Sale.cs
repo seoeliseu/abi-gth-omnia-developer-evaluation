@@ -8,8 +8,15 @@ public class Sale
     private readonly List<SaleItem> _items = [];
     private readonly List<IDomainEvent> _domainEvents = [];
 
-    public Guid Id { get; }
-    public string Numero { get; }
+    private Sale()
+    {
+        Numero = string.Empty;
+        ClienteNome = string.Empty;
+        FilialNome = string.Empty;
+    }
+
+    public Guid Id { get; private set; }
+    public string Numero { get; private set; }
     public DateTimeOffset DataVenda { get; private set; }
     public long ClienteId { get; private set; }
     public string ClienteNome { get; private set; }

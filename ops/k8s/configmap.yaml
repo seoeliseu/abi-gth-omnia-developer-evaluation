@@ -6,4 +6,5 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: Development
   Observabilidade__SeqUrl: http://seq:5341
+  MongoDb__Database: developer-evaluation
   RabbitMq__QueueName: developer-evaluation.webapi

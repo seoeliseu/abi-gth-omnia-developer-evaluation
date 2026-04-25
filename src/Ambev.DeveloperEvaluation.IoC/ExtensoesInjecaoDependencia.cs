@@ -1,12 +1,8 @@
 using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
-using Ambev.DeveloperEvaluation.Application.Auth.Contracts;
-using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
-using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
-using Ambev.DeveloperEvaluation.Application.Sales.Repositories;
 using Ambev.DeveloperEvaluation.Application.Sales.Services;
-using Ambev.DeveloperEvaluation.Application.Users.Contracts;
-using Ambev.DeveloperEvaluation.IoC.Aplicacao;
+using Ambev.DeveloperEvaluation.ORM.HealthChecks;
+using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -19,6 +15,7 @@ public static class ExtensoesInjecaoDependencia
 {
     public static IServiceCollection AdicionarServicosTransversais(this IServiceCollection servicos, IConfiguration configuracao)
     {
+        servicos.AdicionarPersistencia(configuracao);
         servicos.AdicionarServicosAplicacao();
         servicos.AdicionarHealthChecks();
         servicos.AdicionarMensageria(configuracao);
@@ -28,12 +25,6 @@ public static class ExtensoesInjecaoDependencia
 
     private static void AdicionarServicosAplicacao(this IServiceCollection servicos)
     {
-        servicos.AddSingleton<ISaleRepository, RepositorioVendaEmMemoria>();
-        servicos.AddSingleton<IIdempotencyStore, ArmazenamentoIdempotenciaEmMemoria>();
-        servicos.AddSingleton<IUsersService, UsersServiceEmMemoria>();
-        servicos.AddSingleton<IProductsService, ProductsServiceEmMemoria>();
-        servicos.AddSingleton<ICartsService, CartsServiceEmMemoria>();
-        servicos.AddSingleton<IAuthService, AuthServiceEmMemoria>();
         servicos.AddScoped<ISalesApplicationService, SalesApplicationService>();
     }
 
@@ -42,7 +33,9 @@ public static class ExtensoesInjecaoDependencia
         servicos
             .AddHealthChecks()
             .AddCheck("processo_vivo", () => HealthCheckResult.Healthy(), tags: ["live"])
-            .AddCheck("aplicacao_pronta", () => HealthCheckResult.Healthy(), tags: ["ready"]);
+            .AddCheck("aplicacao_pronta", () => HealthCheckResult.Healthy(), tags: ["ready"])
+            .AddDbContextCheck<DeveloperEvaluationDbContext>("postgresql", tags: ["ready"])
+            .AddCheck<MongoReadinessHealthCheck>("mongodb", tags: ["ready"]);
     }
 
     private static void AdicionarMensageria(this IServiceCollection servicos, IConfiguration configuracao)

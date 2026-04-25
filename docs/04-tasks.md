@@ -110,13 +110,13 @@ Commits sugeridos:
 
 ## Épico 5. Persistência
 
-- [ ] Configurar PostgreSQL para dados transacionais.
-- [ ] Definir agregados e mapeamentos ORM.
-- [ ] Criar migrações iniciais.
-- [ ] Implementar MongoDB na versão entregável como store de `event log` e auditoria da venda.
-- [ ] Definir estratégia de outbox ou publicação confiável.
-- [ ] Definir armazenamento de chaves de idempotência HTTP em PostgreSQL.
-- [ ] Definir deduplicação persistida de mensagens consumidas no RabbitMQ.
+- [x] Configurar PostgreSQL para dados transacionais.
+- [x] Definir agregados e mapeamentos ORM.
+- [x] Criar migrações iniciais.
+- [x] Implementar MongoDB na versão entregável como store de `event log` e auditoria da venda.
+- [x] Definir estratégia de outbox ou publicação confiável.
+- [x] Definir armazenamento de chaves de idempotência HTTP em PostgreSQL.
+- [x] Definir deduplicação persistida de mensagens consumidas no RabbitMQ.
 
 Commits sugeridos:
 

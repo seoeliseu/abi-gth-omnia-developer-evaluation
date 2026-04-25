@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Threading.RateLimiting;
 using Ambev.DeveloperEvaluation.Common.Observabilidade;
 using Ambev.DeveloperEvaluation.IoC;
+using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Ambev.DeveloperEvaluation.WebApi.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http.Timeouts;
@@ -72,6 +73,8 @@ builder.Services.AddRequestTimeouts(opcoes =>
 builder.Services.AdicionarServicosTransversais(builder.Configuration);
 
 var app = builder.Build();
+
+await app.Services.InicializarPersistenciaAsync();
 
 app.UseExceptionHandler();
 app.UseMiddleware<MiddlewareCorrelacao>();

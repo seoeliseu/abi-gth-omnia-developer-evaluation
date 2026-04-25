@@ -2,11 +2,16 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities;
 
 public class SaleItem
 {
-    public Guid Id { get; }
-    public long ProductId { get; }
-    public string ProductTitle { get; }
+    private SaleItem()
+    {
+        ProductTitle = string.Empty;
+    }
+
+    public Guid Id { get; private set; }
+    public long ProductId { get; private set; }
+    public string ProductTitle { get; private set; }
     public int Quantidade { get; private set; }
-    public decimal ValorUnitario { get; }
+    public decimal ValorUnitario { get; private set; }
     public decimal PercentualDesconto { get; private set; }
     public bool Cancelado { get; private set; }
     public decimal ValorBruto => Quantidade * ValorUnitario;

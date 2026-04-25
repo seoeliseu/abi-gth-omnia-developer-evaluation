@@ -363,7 +363,7 @@ public sealed class SalesApplicationService : ISalesApplicationService
             return null;
         }
 
-        if (!_idempotencyStore.TryGet(escopo, chaveIdempotencia, out var entrada) || entrada is null)
+        if (!_idempotencyStore.TryGet<Result<SaleDetail>>(escopo, chaveIdempotencia, out var entrada) || entrada is null)
         {
             return null;
         }
@@ -373,7 +373,7 @@ public sealed class SalesApplicationService : ISalesApplicationService
             return Result<SaleDetail>.Conflict([new ResultError("idempotency_key_invalida", "A chave de idempotência já foi usada para uma operação diferente.")]);
         }
 
-        return entrada.Resultado as Result<SaleDetail>;
+        return entrada.Resultado;
     }
 
     private void ArmazenarResultadoIdempotente(string escopo, string? chaveIdempotencia, string fingerprint, Result<SaleDetail> resultado)
