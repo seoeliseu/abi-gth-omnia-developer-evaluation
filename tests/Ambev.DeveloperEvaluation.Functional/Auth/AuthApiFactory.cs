@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Testcontainers.MongoDb;
 using Testcontainers.PostgreSql;
-using Testcontainers.RabbitMq;
 
 namespace Ambev.DeveloperEvaluation.Functional.Auth;
 
@@ -15,9 +14,7 @@ public sealed class AuthApiFactory : WebApplicationFactory<AuthController>, IAsy
     {
         ["ConnectionStrings__Postgres"] = null,
         ["ConnectionStrings__MongoDb"] = null,
-        ["MongoDb__Database"] = null,
-        ["RabbitMq__ConnectionString"] = null,
-        ["RabbitMq__QueueName"] = null
+        ["MongoDb__Database"] = null
     };
 
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder("postgres:15.1")
@@ -29,31 +26,22 @@ public sealed class AuthApiFactory : WebApplicationFactory<AuthController>, IAsy
     private readonly MongoDbContainer _mongoDbContainer = new MongoDbBuilder("mongo:7.0")
         .Build();
 
-    private readonly RabbitMqContainer _rabbitMqContainer = new RabbitMqBuilder("rabbitmq:3.13-management")
-        .WithUsername("guest")
-        .WithPassword("guest")
-        .Build();
-
     public async Task InitializeAsync()
     {
         await _postgreSqlContainer.StartAsync();
         await _mongoDbContainer.StartAsync();
-        await _rabbitMqContainer.StartAsync();
 
         ApplyEnvironmentSettings(new Dictionary<string, string?>
         {
             ["ConnectionStrings__Postgres"] = _postgreSqlContainer.GetConnectionString(),
             ["ConnectionStrings__MongoDb"] = _mongoDbContainer.GetConnectionString(),
-            ["MongoDb__Database"] = DatabaseName,
-            ["RabbitMq__ConnectionString"] = _rabbitMqContainer.GetConnectionString(),
-            ["RabbitMq__QueueName"] = "developer-evaluation.auth.functional"
+            ["MongoDb__Database"] = DatabaseName
         });
     }
 
     public new async Task DisposeAsync()
     {
         ApplyEnvironmentSettings(EmptySettings);
-        await _rabbitMqContainer.DisposeAsync();
         await _mongoDbContainer.DisposeAsync();
         await _postgreSqlContainer.DisposeAsync();
         await base.DisposeAsync();
@@ -68,9 +56,7 @@ public sealed class AuthApiFactory : WebApplicationFactory<AuthController>, IAsy
             {
                 ["ConnectionStrings:Postgres"] = _postgreSqlContainer.GetConnectionString(),
                 ["ConnectionStrings:MongoDb"] = _mongoDbContainer.GetConnectionString(),
-                ["MongoDb:Database"] = DatabaseName,
-                ["RabbitMq:ConnectionString"] = _rabbitMqContainer.GetConnectionString(),
-                ["RabbitMq:QueueName"] = "developer-evaluation.auth.functional"
+                ["MongoDb:Database"] = DatabaseName
             });
         });
     }

@@ -130,15 +130,11 @@ services:
       ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
       ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
       MongoDb__Database: developer_evaluation
-      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
-      RabbitMq__QueueName: developer-evaluation.auth.webapi
     depends_on:
       postgres:
         condition: service_healthy
       mongodb:
         condition: service_started
-      rabbitmq:
-        condition: service_healthy
       seq:
         condition: service_started
     ports:

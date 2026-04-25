@@ -119,12 +119,6 @@ public static class ExtensoesInjecaoDependencia
         return servicos;
     }
 
-    public static IServiceCollection AdicionarMensageriaAuth(this IServiceCollection servicos, IConfiguration configuracao)
-    {
-        servicos.TryAdicionarTransporteMensageria(configuracao);
-        return servicos;
-    }
-
     private static void AdicionarHealthChecks(this IServiceCollection servicos)
     {
         servicos

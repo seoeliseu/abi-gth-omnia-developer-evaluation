@@ -51,4 +51,3 @@ data:
   ASPNETCORE_ENVIRONMENT: Development
   Observabilidade__SeqUrl: http://seq:5341
   MongoDb__Database: developer_evaluation
-  RabbitMq__QueueName: developer-evaluation.auth.webapi
