@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ambev.DeveloperEvaluation.Application/Ambev.DeveloperEvaluation.Application.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.Common/Ambev.DeveloperEvaluation.Common.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.Domain/Ambev.DeveloperEvaluation.Domain.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.IoC/Ambev.DeveloperEvaluation.IoC.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.ORM/Ambev.DeveloperEvaluation.ORM.csproj" />
+    <Project Path="src/Ambev.DeveloperEvaluation.WebApi/Ambev.DeveloperEvaluation.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ambev.DeveloperEvaluation.Functional/Ambev.DeveloperEvaluation.Functional.csproj" />
+    <Project Path="tests/Ambev.DeveloperEvaluation.Integration/Ambev.DeveloperEvaluation.Integration.csproj" />
+    <Project Path="tests/Ambev.DeveloperEvaluation.Unit/Ambev.DeveloperEvaluation.Unit.csproj" />
+  </Folder>
+</Solution>

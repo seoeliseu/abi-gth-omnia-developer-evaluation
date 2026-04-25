@@ -1,0 +1,10 @@
+.git
+.vs
+.claude
+**/bin
+**/obj
+**/TestResults
+**/coverage*
+README.md
+docs
+tests
