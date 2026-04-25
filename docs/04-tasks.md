@@ -115,8 +115,10 @@ Commits sugeridos:
 - [x] Criar migrações iniciais.
 - [x] Implementar MongoDB na versão entregável como store de `event log` e auditoria da venda.
 - [x] Definir estratégia de outbox ou publicação confiável.
+- [x] Publicar eventos pendentes da outbox de vendas no RabbitMQ.
 - [x] Definir armazenamento de chaves de idempotência HTTP em PostgreSQL.
 - [x] Definir deduplicação persistida de mensagens consumidas no RabbitMQ.
+- [x] Inscrever serviços consumidores nos eventos de venda com inbox persistente.
 
 Commits sugeridos:
 
@@ -125,6 +127,7 @@ Commits sugeridos:
 - `feat: configura mongodb para event log e auditoria`
 - `feat: adiciona estrategia de outbox`
 - `feat: adiciona idempotencia http e deduplicacao de mensagens`
+- `feat: publica eventos de venda via outbox`
 
 ## Épico 5.1 Resiliência e integrações
 

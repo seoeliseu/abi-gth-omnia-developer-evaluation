@@ -1,6 +1,7 @@
 using Ambev.DeveloperEvaluation.Application.Common.Mensageria;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Ambev.DeveloperEvaluation.ORM.Persistence.Services;
 
@@ -33,6 +34,13 @@ public sealed class ProcessedMessageStorePostgres : IProcessedMessageStore
             ProcessedAt = DateTimeOffset.UtcNow
         });
 
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception) when (exception.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            _context.ChangeTracker.Clear();
+        }
     }
 }

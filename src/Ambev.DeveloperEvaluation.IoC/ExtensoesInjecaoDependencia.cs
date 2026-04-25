@@ -5,6 +5,7 @@ using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
 using Ambev.DeveloperEvaluation.Application.Sales.Services;
 using Ambev.DeveloperEvaluation.Application.Users.Contracts;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.IoC.Mensageria;
 using Ambev.DeveloperEvaluation.ORM.HealthChecks;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Rebus.Config;
+using Rebus.Handlers;
 using Rebus.ServiceProvider;
 
 namespace Ambev.DeveloperEvaluation.IoC;
@@ -83,19 +85,34 @@ public static class ExtensoesInjecaoDependencia
 
     public static IServiceCollection AdicionarMensageriaProducts(this IServiceCollection servicos, IConfiguration configuracao)
     {
-        servicos.TryAdicionarTransporteMensageria(configuracao);
+        if (servicos.TryAdicionarTransporteMensageria(configuracao))
+        {
+            servicos.AdicionarConsumerEventosVenda<ProductsSalesIntegrationEventsConsumer>();
+            servicos.AddHostedService<ProductsSalesEventsSubscriberHostedService>();
+        }
+
         return servicos;
     }
 
     public static IServiceCollection AdicionarMensageriaUsers(this IServiceCollection servicos, IConfiguration configuracao)
     {
-        servicos.TryAdicionarTransporteMensageria(configuracao);
+        if (servicos.TryAdicionarTransporteMensageria(configuracao))
+        {
+            servicos.AdicionarConsumerEventosVenda<UsersSalesIntegrationEventsConsumer>();
+            servicos.AddHostedService<UsersSalesEventsSubscriberHostedService>();
+        }
+
         return servicos;
     }
 
     public static IServiceCollection AdicionarMensageriaCarts(this IServiceCollection servicos, IConfiguration configuracao)
     {
-        servicos.TryAdicionarTransporteMensageria(configuracao);
+        if (servicos.TryAdicionarTransporteMensageria(configuracao))
+        {
+            servicos.AdicionarConsumerEventosVenda<CartsSalesIntegrationEventsConsumer>();
+            servicos.AddHostedService<CartsSalesEventsSubscriberHostedService>();
+        }
+
         return servicos;
     }
 
@@ -130,5 +147,20 @@ public static class ExtensoesInjecaoDependencia
         );
 
         return true;
+    }
+
+    private static IServiceCollection AdicionarConsumerEventosVenda<TConsumer>(this IServiceCollection servicos)
+        where TConsumer : class,
+        IHandleMessages<SaleCreatedEvent>,
+        IHandleMessages<SaleModifiedEvent>,
+        IHandleMessages<SaleCancelledEvent>,
+        IHandleMessages<ItemCancelledEvent>
+    {
+        servicos.AddTransient<TConsumer>();
+        servicos.AddTransient<IHandleMessages<SaleCreatedEvent>>(provider => provider.GetRequiredService<TConsumer>());
+        servicos.AddTransient<IHandleMessages<SaleModifiedEvent>>(provider => provider.GetRequiredService<TConsumer>());
+        servicos.AddTransient<IHandleMessages<SaleCancelledEvent>>(provider => provider.GetRequiredService<TConsumer>());
+        servicos.AddTransient<IHandleMessages<ItemCancelledEvent>>(provider => provider.GetRequiredService<TConsumer>());
+        return servicos;
     }
 }
