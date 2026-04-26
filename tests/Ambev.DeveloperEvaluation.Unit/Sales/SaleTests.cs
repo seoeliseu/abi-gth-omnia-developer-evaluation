@@ -1,5 +1,5 @@
-using Ambev.DeveloperEvaluation.Domain.Entities;
-using Ambev.DeveloperEvaluation.Domain.Events;
+using Ambev.DeveloperEvaluation.Sales.Domain.Entities;
+using Ambev.DeveloperEvaluation.Sales.Domain.Events;
 
 namespace Ambev.DeveloperEvaluation.Unit.Sales;
 

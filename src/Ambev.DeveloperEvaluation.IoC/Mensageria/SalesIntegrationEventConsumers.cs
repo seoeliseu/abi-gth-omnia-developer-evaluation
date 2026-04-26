@@ -1,5 +1,5 @@
-using Ambev.DeveloperEvaluation.Application.Common.Mensageria;
-using Ambev.DeveloperEvaluation.Domain.Events;
+using Ambev.DeveloperEvaluation.Common.Mensageria;
+using Ambev.DeveloperEvaluation.Sales.Domain.Events;
 using Microsoft.Extensions.Logging;
 using Rebus.Handlers;
 using Rebus.Messages;

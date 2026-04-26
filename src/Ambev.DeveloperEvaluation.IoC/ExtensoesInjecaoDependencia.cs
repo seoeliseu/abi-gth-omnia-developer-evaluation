@@ -1,16 +1,14 @@
-using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
-using Ambev.DeveloperEvaluation.Application.Auth.Contracts;
-using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
-using Ambev.DeveloperEvaluation.Application.Products.Contracts;
-using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
-using Ambev.DeveloperEvaluation.Application.Sales.Services;
-using Ambev.DeveloperEvaluation.Application.Users.Contracts;
+using Ambev.DeveloperEvaluation.Auth.Infrastructure.DependencyInjection;
+using Ambev.DeveloperEvaluation.Carts.Infrastructure.DependencyInjection;
 using Ambev.DeveloperEvaluation.Common.Resilience;
-using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.IoC.Mensageria;
 using Ambev.DeveloperEvaluation.IoC.Resilience;
 using Ambev.DeveloperEvaluation.ORM.HealthChecks;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
+using Ambev.DeveloperEvaluation.Products.Infrastructure.DependencyInjection;
+using Ambev.DeveloperEvaluation.Sales.Domain.Events;
+using Ambev.DeveloperEvaluation.Sales.Infrastructure.DependencyInjection;
+using Ambev.DeveloperEvaluation.Users.Infrastructure.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -45,34 +43,33 @@ public static class ExtensoesInjecaoDependencia
 
     public static IServiceCollection AdicionarServicosAplicacaoSales(this IServiceCollection servicos)
     {
-        servicos.AdicionarPersistenciaSales();
-        servicos.AdicionarPersistenciaProducts();
-        servicos.AdicionarPersistenciaUsers();
-        servicos.AddScoped<ISalesApplicationService, SalesApplicationService>();
+        servicos.AdicionarModuloSales();
+        servicos.AdicionarModuloProducts();
+        servicos.AdicionarModuloUsers();
         return servicos;
     }
 
     public static IServiceCollection AdicionarServicosAplicacaoProducts(this IServiceCollection servicos)
     {
-        servicos.AdicionarPersistenciaProducts();
+        servicos.AdicionarModuloProducts();
         return servicos;
     }
 
     public static IServiceCollection AdicionarServicosAplicacaoUsers(this IServiceCollection servicos)
     {
-        servicos.AdicionarPersistenciaUsers();
+        servicos.AdicionarModuloUsers();
         return servicos;
     }
 
     public static IServiceCollection AdicionarServicosAplicacaoCarts(this IServiceCollection servicos)
     {
-        servicos.AdicionarPersistenciaCarts();
+        servicos.AdicionarModuloCarts();
         return servicos;
     }
 
     public static IServiceCollection AdicionarServicosAplicacaoAuth(this IServiceCollection servicos)
     {
-        servicos.AdicionarPersistenciaAuth();
+        servicos.AdicionarModuloAuth();
         return servicos;
     }
 

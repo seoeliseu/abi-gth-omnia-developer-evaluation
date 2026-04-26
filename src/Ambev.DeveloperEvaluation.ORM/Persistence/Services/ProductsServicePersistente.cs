@@ -1,7 +1,7 @@
-using Ambev.DeveloperEvaluation.Application.Common;
-using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Common.Results;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
+using Ambev.DeveloperEvaluation.Products.Application.Common;
+using Ambev.DeveloperEvaluation.Products.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.ORM.Persistence.Services;

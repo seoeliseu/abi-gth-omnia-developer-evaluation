@@ -1,12 +1,11 @@
-using Ambev.DeveloperEvaluation.Application.Common;
-using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
-using Ambev.DeveloperEvaluation.Application.Products.Contracts;
-using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
-using Ambev.DeveloperEvaluation.Application.Sales.Repositories;
-using Ambev.DeveloperEvaluation.Application.Sales.Services;
-using Ambev.DeveloperEvaluation.Application.Users.Contracts;
 using Ambev.DeveloperEvaluation.Common.Results;
-using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Products.Application.Contracts;
+using Ambev.DeveloperEvaluation.Sales.Application.Common.Idempotencia;
+using Ambev.DeveloperEvaluation.Sales.Application.Contracts;
+using Ambev.DeveloperEvaluation.Sales.Application.Repositories;
+using Ambev.DeveloperEvaluation.Sales.Application.Services;
+using Ambev.DeveloperEvaluation.Sales.Domain.Entities;
+using Ambev.DeveloperEvaluation.Users.Application.Contracts;
 
 namespace Ambev.DeveloperEvaluation.Unit.Sales;
 
@@ -98,15 +97,15 @@ public class SalesApplicationServiceTests
             return Task.FromResult(Result<IReadOnlyCollection<UserReference>>.Success(usuarios));
         }
 
-        public Task<Result<PagedResult<UserDetail>>> ListarAsync(UserListFilter filtro, CancellationToken cancellationToken)
+        public Task<Result<Ambev.DeveloperEvaluation.Users.Application.Common.PagedResult<UserDetail>>> ListarAsync(UserListFilter filtro, CancellationToken cancellationToken)
         {
             IReadOnlyCollection<UserDetail> usuarios =
             [
                 new UserDetail(1, "email@example.com", "usuario1", "123456", new UserNameData("Usuario", "Um"), new UserAddressData("São Paulo", "Rua A", 1, "01000-000", new UserGeolocationData("-23.55", "-46.63")), "11999999999", "Active", "Customer")
             ];
 
-            var paged = new PagedResult<UserDetail>(usuarios, usuarios.Count, 1, 1);
-            return Task.FromResult(Result<PagedResult<UserDetail>>.Success(paged));
+            var paged = new Ambev.DeveloperEvaluation.Users.Application.Common.PagedResult<UserDetail>(usuarios, usuarios.Count, 1, 1);
+            return Task.FromResult(Result<Ambev.DeveloperEvaluation.Users.Application.Common.PagedResult<UserDetail>>.Success(paged));
         }
 
         public Task<Result<UserDetail>> ObterDetalhePorIdAsync(long usuarioId, CancellationToken cancellationToken)
@@ -146,14 +145,14 @@ public class SalesApplicationServiceTests
             return Task.FromResult(Result<IReadOnlyCollection<ProductReference>>.Success(produtos));
         }
 
-        public Task<Result<PagedResult<ProductDetail>>> ListarAsync(ProductListFilter filtro, CancellationToken cancellationToken)
+        public Task<Result<Ambev.DeveloperEvaluation.Products.Application.Common.PagedResult<ProductDetail>>> ListarAsync(ProductListFilter filtro, CancellationToken cancellationToken)
         {
             IReadOnlyCollection<ProductDetail> produtos =
             [
                 new ProductDetail(1, "Produto 1", 10m, "Descricao", "categoria", "https://example.com/1.png", new ProductRatingData(4.5m, 10), true)
             ];
 
-            return Task.FromResult(Result<PagedResult<ProductDetail>>.Success(new PagedResult<ProductDetail>(produtos, produtos.Count, 1, 1)));
+            return Task.FromResult(Result<Ambev.DeveloperEvaluation.Products.Application.Common.PagedResult<ProductDetail>>.Success(new Ambev.DeveloperEvaluation.Products.Application.Common.PagedResult<ProductDetail>(produtos, produtos.Count, 1, 1)));
         }
 
         public Task<Result<ProductDetail>> CriarAsync(UpsertProductRequest requisicao, CancellationToken cancellationToken)
@@ -185,7 +184,7 @@ public class SalesApplicationServiceTests
             return Task.FromResult(Result<IReadOnlyCollection<string>>.Success(categorias));
         }
 
-        public Task<Result<PagedResult<ProductDetail>>> ListarPorCategoriaAsync(string categoria, ProductListFilter filtro, CancellationToken cancellationToken)
+        public Task<Result<Ambev.DeveloperEvaluation.Products.Application.Common.PagedResult<ProductDetail>>> ListarPorCategoriaAsync(string categoria, ProductListFilter filtro, CancellationToken cancellationToken)
         {
             return ListarAsync(filtro with { Category = categoria }, cancellationToken);
         }

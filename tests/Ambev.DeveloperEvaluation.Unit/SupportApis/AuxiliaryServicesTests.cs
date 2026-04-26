@@ -1,7 +1,7 @@
-using Ambev.DeveloperEvaluation.Application.Auth.Contracts;
-using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
-using Ambev.DeveloperEvaluation.Application.Products.Contracts;
-using Ambev.DeveloperEvaluation.Application.Users.Contracts;
+using Ambev.DeveloperEvaluation.Auth.Application.Contracts;
+using Ambev.DeveloperEvaluation.Carts.Application.Contracts;
+using Ambev.DeveloperEvaluation.Products.Application.Contracts;
+using Ambev.DeveloperEvaluation.Users.Application.Contracts;
 using Ambev.DeveloperEvaluation.IoC.Aplicacao;
 
 namespace Ambev.DeveloperEvaluation.Unit.SupportApis;

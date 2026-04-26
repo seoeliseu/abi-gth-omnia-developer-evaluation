@@ -1,13 +1,12 @@
-using Ambev.DeveloperEvaluation.Application.Auth.Contracts;
-using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
-using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
-using Ambev.DeveloperEvaluation.Application.Common.Mensageria;
-using Ambev.DeveloperEvaluation.Application.Products.Contracts;
-using Ambev.DeveloperEvaluation.Application.Sales.Repositories;
-using Ambev.DeveloperEvaluation.Application.Users.Contracts;
+using Ambev.DeveloperEvaluation.Auth.Application.Contracts;
+using Ambev.DeveloperEvaluation.Carts.Application.Contracts;
+using Ambev.DeveloperEvaluation.Common.Mensageria;
 using Ambev.DeveloperEvaluation.ORM.HealthChecks;
 using Ambev.DeveloperEvaluation.ORM.Mongo;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Services;
+using Ambev.DeveloperEvaluation.Products.Application.Contracts;
+using Ambev.DeveloperEvaluation.Sales.Application.Common.Idempotencia;
+using Ambev.DeveloperEvaluation.Users.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,7 +56,6 @@ public static class PersistenceServiceCollectionExtensions
 
     public static IServiceCollection AdicionarPersistenciaSales(this IServiceCollection servicos)
     {
-        servicos.AddScoped<ISaleRepository, SaleRepositoryEf>();
         servicos.AddScoped<IIdempotencyStore, PostgresIdempotencyStore>();
         return servicos;
     }

@@ -1,5 +1,5 @@
-using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Common.Resilience;
+using Ambev.DeveloperEvaluation.Sales.Domain.Events;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Rebus.Bus;

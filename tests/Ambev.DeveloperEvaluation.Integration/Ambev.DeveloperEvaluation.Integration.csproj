@@ -25,9 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Application\Ambev.DeveloperEvaluation.Application.csproj" />
     <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.IoC\Ambev.DeveloperEvaluation.IoC.csproj" />
     <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.ORM\Ambev.DeveloperEvaluation.ORM.csproj" />
+    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Sales.Application\Ambev.DeveloperEvaluation.Sales.Application.csproj" />
+    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Sales.Domain\Ambev.DeveloperEvaluation.Sales.Domain.csproj" />
   </ItemGroup>
 
 </Project>

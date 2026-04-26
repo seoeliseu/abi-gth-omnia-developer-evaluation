@@ -1,4 +1,4 @@
-using Ambev.DeveloperEvaluation.Application.Auth.Contracts;
+using Ambev.DeveloperEvaluation.Auth.Application.Contracts;
 using Ambev.DeveloperEvaluation.Common.Results;
 
 namespace Ambev.DeveloperEvaluation.IoC.Aplicacao;

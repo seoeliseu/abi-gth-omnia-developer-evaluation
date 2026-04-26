@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Ambev.DeveloperEvaluation.Common.Resilience;
 using Ambev.DeveloperEvaluation.Domain.Common;
-using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Sales.Domain.Entities;
 using MongoDB.Driver;
 
 namespace Ambev.DeveloperEvaluation.ORM.Mongo;

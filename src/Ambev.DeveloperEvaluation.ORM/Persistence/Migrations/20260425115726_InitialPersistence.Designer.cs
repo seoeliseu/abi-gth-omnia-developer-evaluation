@@ -25,7 +25,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Sales.Domain.Entities.Sale", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -330,9 +330,9 @@ namespace Ambev.DeveloperEvaluation.ORM.Persistence.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Sales.Domain.Entities.Sale", b =>
                 {
-                    b.OwnsMany("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", "Items", b1 =>
+                    b.OwnsMany("Ambev.DeveloperEvaluation.Sales.Domain.Entities.SaleItem", "Items", b1 =>
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()

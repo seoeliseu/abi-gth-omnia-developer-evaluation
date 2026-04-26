@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
-using Ambev.DeveloperEvaluation.Application.Common;
-using Ambev.DeveloperEvaluation.Application.Products.Contracts;
 using Ambev.DeveloperEvaluation.Common.Results;
+using Ambev.DeveloperEvaluation.Products.Application.Common;
+using Ambev.DeveloperEvaluation.Products.Application.Contracts;
 
 namespace Ambev.DeveloperEvaluation.IoC.Aplicacao;
 

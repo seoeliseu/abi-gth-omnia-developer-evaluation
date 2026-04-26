@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using Ambev.DeveloperEvaluation.Application.Sales.Repositories;
-using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Sales.Application.Repositories;
+using Ambev.DeveloperEvaluation.Sales.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.IoC.Aplicacao;
 

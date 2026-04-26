@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Text.Json;
-using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
 using Ambev.DeveloperEvaluation.Common.Results;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
+using Ambev.DeveloperEvaluation.Sales.Application.Common.Idempotencia;
 
 namespace Ambev.DeveloperEvaluation.ORM.Persistence.Services;
 

@@ -1,5 +1,5 @@
-using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
+using Ambev.DeveloperEvaluation.Sales.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.ORM.Persistence;

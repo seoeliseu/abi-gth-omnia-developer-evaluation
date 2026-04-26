@@ -1,5 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Common;
-using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Sales.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.ORM.Mongo;
 

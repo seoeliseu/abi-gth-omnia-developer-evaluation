@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Ambev.DeveloperEvaluation.Application\Ambev.DeveloperEvaluation.Application.csproj" />
+    <ProjectReference Include="..\Ambev.DeveloperEvaluation.Auth.Application\Ambev.DeveloperEvaluation.Auth.Application.csproj" />
+    <ProjectReference Include="..\Ambev.DeveloperEvaluation.Carts.Application\Ambev.DeveloperEvaluation.Carts.Application.csproj" />
     <ProjectReference Include="..\Ambev.DeveloperEvaluation.Domain\Ambev.DeveloperEvaluation.Domain.csproj" />
     <ProjectReference Include="..\Ambev.DeveloperEvaluation.Common\Ambev.DeveloperEvaluation.Common.csproj" />
+    <ProjectReference Include="..\Ambev.DeveloperEvaluation.Products.Application\Ambev.DeveloperEvaluation.Products.Application.csproj" />
+    <ProjectReference Include="..\Ambev.DeveloperEvaluation.Sales.Application\Ambev.DeveloperEvaluation.Sales.Application.csproj" />
+    <ProjectReference Include="..\Ambev.DeveloperEvaluation.Sales.Domain\Ambev.DeveloperEvaluation.Sales.Domain.csproj" />
+    <ProjectReference Include="..\Ambev.DeveloperEvaluation.Users.Application\Ambev.DeveloperEvaluation.Users.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

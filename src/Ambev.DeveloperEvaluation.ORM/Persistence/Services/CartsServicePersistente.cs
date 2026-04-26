@@ -1,5 +1,5 @@
-using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
-using Ambev.DeveloperEvaluation.Application.Common;
+using Ambev.DeveloperEvaluation.Carts.Application.Common;
+using Ambev.DeveloperEvaluation.Carts.Application.Contracts;
 using Ambev.DeveloperEvaluation.Common.Results;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;

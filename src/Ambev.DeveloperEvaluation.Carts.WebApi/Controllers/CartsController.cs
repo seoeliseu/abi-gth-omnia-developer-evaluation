@@ -1,4 +1,4 @@
-using Ambev.DeveloperEvaluation.Application.Carts.Contracts;
+using Ambev.DeveloperEvaluation.Carts.Application.Contracts;
 using Ambev.DeveloperEvaluation.ServiceDefaults.Resultados;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;

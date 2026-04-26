@@ -1,7 +1,7 @@
-using Ambev.DeveloperEvaluation.Application.Sales.Contracts;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM.Mongo;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
+using Ambev.DeveloperEvaluation.Sales.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

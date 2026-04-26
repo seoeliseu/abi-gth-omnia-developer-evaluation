@@ -1,0 +1,7 @@
+namespace Ambev.DeveloperEvaluation.Users.Application.Common;
+
+public sealed record PagedResult<T>(
+    IReadOnlyCollection<T> Data,
+    int TotalItems,
+    int CurrentPage,
+    int TotalPages);

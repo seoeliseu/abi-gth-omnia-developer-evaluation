@@ -1,8 +1,8 @@
 using System.Text.Json;
 using Ambev.DeveloperEvaluation.Common.Resilience;
-using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
+using Ambev.DeveloperEvaluation.Sales.Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

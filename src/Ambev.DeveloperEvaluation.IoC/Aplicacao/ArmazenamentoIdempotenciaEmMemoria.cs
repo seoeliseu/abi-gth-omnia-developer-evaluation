@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using Ambev.DeveloperEvaluation.Application.Common.Idempotencia;
+using Ambev.DeveloperEvaluation.Sales.Application.Common.Idempotencia;
 
 namespace Ambev.DeveloperEvaluation.IoC.Aplicacao;
 

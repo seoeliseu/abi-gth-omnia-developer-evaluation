@@ -1,4 +1,4 @@
-using Ambev.DeveloperEvaluation.Application.Common.Mensageria;
+using Ambev.DeveloperEvaluation.Common.Mensageria;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
