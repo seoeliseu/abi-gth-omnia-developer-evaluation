@@ -41,11 +41,14 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
         await _postgreSqlContainer.DisposeAsync();
     }
 
-    [Fact]
-    public async Task SalesOutbox_DevePublicarEvento_E_ConsumerDeveDeduplicarMensagem()
+    [Theory]
+    [InlineData("products", "products.sales-events")]
+    [InlineData("users", "users.sales-events")]
+    [InlineData("carts", "carts.sales-events")]
+    public async Task SalesOutbox_DevePublicarEvento_E_ConsumerDeveDeduplicarMensagem(string consumerType, string consumerName)
     {
         var queueSuffix = Guid.NewGuid().ToString("N");
-        var consumerProvider = CreateProductsConsumerProvider(queueSuffix);
+        var consumerProvider = CreateConsumerProvider(consumerType, queueSuffix);
         var publisherProvider = CreateSalesPublisherProvider(queueSuffix);
 
         try
@@ -63,7 +66,7 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
             {
                 await using var verificationContext = CreateDbContext();
                 var outboxMessage = await verificationContext.OutboxMessages.SingleAsync(message => message.Id == outboxId);
-                var processedCount = await verificationContext.ProcessedMessages.CountAsync(message => message.Consumer == "products.sales-events");
+                var processedCount = await verificationContext.ProcessedMessages.CountAsync(message => message.Consumer == consumerName && message.MessageId == outboxId.ToString("N"));
                 return outboxMessage.PublishedAt is not null && processedCount == 1;
             }, TimeSpan.FromSeconds(20));
 
@@ -81,7 +84,7 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
             await using var finalContext = CreateDbContext();
             var finalOutboxMessage = await finalContext.OutboxMessages.SingleAsync(message => message.Id == outboxId);
             var processedMessages = await finalContext.ProcessedMessages
-                .Where(message => message.Consumer == "products.sales-events")
+                .Where(message => message.Consumer == consumerName && message.MessageId == outboxId.ToString("N"))
                 .ToListAsync();
 
             Assert.NotNull(finalOutboxMessage.PublishedAt);
@@ -98,13 +101,28 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
         }
     }
 
-    private ServiceProvider CreateProductsConsumerProvider(string queueSuffix)
+    private ServiceProvider CreateConsumerProvider(string consumerType, string queueSuffix)
     {
-        var configuration = CreateConfiguration($"developer-evaluation.products.integration.{queueSuffix}");
+        var configuration = CreateConfiguration($"developer-evaluation.{consumerType}.integration.{queueSuffix}");
         var services = new ServiceCollection();
         services.AddLogging();
         services.AdicionarInfraestruturaCompartilhada(configuration);
-        services.AdicionarMensageriaProducts(configuration);
+
+        switch (consumerType)
+        {
+            case "products":
+                services.AdicionarMensageriaProducts(configuration);
+                break;
+            case "users":
+                services.AdicionarMensageriaUsers(configuration);
+                break;
+            case "carts":
+                services.AdicionarMensageriaCarts(configuration);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(consumerType), consumerType, "Consumidor de teste não suportado.");
+        }
+
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
     }
 

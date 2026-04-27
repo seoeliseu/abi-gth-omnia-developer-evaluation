@@ -73,6 +73,96 @@ public sealed class ProductsApiFunctionalTests : IClassFixture<ProductsApiFactor
         Assert.Equal(requisicao.price, obtido.Price);
     }
 
+    [Fact]
+    public async Task GetProductsPorCategoria_DeveListarSomenteProdutosDaCategoriaInformada()
+    {
+        using var resposta = await _client.GetAsync("/api/products/category/beverage?page=1&size=10");
+        var produtos = await resposta.Content.ReadFromJsonAsync<PagedResponse<ProductResponse>>(JsonOptions);
+
+        Assert.Equal(HttpStatusCode.OK, resposta.StatusCode);
+        Assert.NotNull(produtos);
+        Assert.NotEmpty(produtos!.Data);
+        Assert.All(produtos.Data, produto => Assert.Equal("beverage", produto.Category));
+    }
+
+    [Fact]
+    public async Task PutProducts_DeveAtualizarProdutoExistente()
+    {
+        var requisicaoCriacao = new
+        {
+            title = "Craft Soda Pack",
+            price = 18.40m,
+            description = "Kit inicial de refrigerantes artesanais",
+            category = "beverage",
+            image = "https://example.com/products/craft-soda-pack.png",
+            rating = new
+            {
+                rate = 4.1m,
+                count = 8
+            }
+        };
+
+        using var criarResposta = await _client.PostAsJsonAsync("/api/products", requisicaoCriacao);
+        var criado = await criarResposta.Content.ReadFromJsonAsync<ProductResponse>(JsonOptions);
+
+        Assert.Equal(HttpStatusCode.Created, criarResposta.StatusCode);
+        Assert.NotNull(criado);
+
+        var requisicaoAtualizacao = new
+        {
+            title = "Craft Soda Pack XL",
+            price = 21.90m,
+            description = "Kit ampliado de refrigerantes artesanais",
+            category = "beverage",
+            image = "https://example.com/products/craft-soda-pack-xl.png",
+            rating = new
+            {
+                rate = 4.8m,
+                count = 17
+            }
+        };
+
+        using var atualizarResposta = await _client.PutAsJsonAsync($"/api/products/{criado!.Id}", requisicaoAtualizacao);
+        var atualizado = await atualizarResposta.Content.ReadFromJsonAsync<ProductResponse>(JsonOptions);
+
+        Assert.Equal(HttpStatusCode.OK, atualizarResposta.StatusCode);
+        Assert.NotNull(atualizado);
+        Assert.Equal(criado.Id, atualizado!.Id);
+        Assert.Equal(requisicaoAtualizacao.title, atualizado.Title);
+        Assert.Equal(requisicaoAtualizacao.price, atualizado.Price);
+        Assert.Equal(requisicaoAtualizacao.rating.count, atualizado.Rating.Count);
+    }
+
+    [Fact]
+    public async Task DeleteProducts_DeveRemoverProdutoECausarNotFoundNaConsulta()
+    {
+        var requisicao = new
+        {
+            title = "Temporary Product",
+            price = 9.90m,
+            description = "Produto temporário para teste funcional",
+            category = "misc",
+            image = "https://example.com/products/temp-product.png",
+            rating = new
+            {
+                rate = 3.9m,
+                count = 2
+            }
+        };
+
+        using var criarResposta = await _client.PostAsJsonAsync("/api/products", requisicao);
+        var criado = await criarResposta.Content.ReadFromJsonAsync<ProductResponse>(JsonOptions);
+
+        Assert.Equal(HttpStatusCode.Created, criarResposta.StatusCode);
+        Assert.NotNull(criado);
+
+        using var removerResposta = await _client.DeleteAsync($"/api/products/{criado!.Id}");
+        Assert.Equal(HttpStatusCode.OK, removerResposta.StatusCode);
+
+        using var obterResposta = await _client.GetAsync($"/api/products/{criado.Id}");
+        Assert.Equal(HttpStatusCode.NotFound, obterResposta.StatusCode);
+    }
+
     private sealed record PagedResponse<T>(IReadOnlyCollection<T> Data, int TotalItems, int CurrentPage, int TotalPages);
 
     private sealed record ProductResponse(long Id, string Title, decimal Price, string Description, string Category, string Image, RatingResponse Rating, bool Active);

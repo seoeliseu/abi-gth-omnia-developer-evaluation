@@ -87,6 +87,116 @@ public sealed class SalesPersistenceIntegrationTests : IAsyncLifetime
         Assert.All(auditorias, auditoria => Assert.Equal(requisicao.Numero, auditoria.NumeroVenda));
     }
 
+    [Fact]
+    public async Task AtualizarAsync_DevePersistirEventoDeModificacaoEAuditoria()
+    {
+        await using var provider = CreateSalesProvider();
+        await provider.InicializarPersistenciaAsync();
+
+        await using var scope = provider.CreateAsyncScope();
+        var salesService = scope.ServiceProvider.GetRequiredService<ISalesApplicationService>();
+        var criacao = await salesService.CriarAsync(CriarRequisicaoVenda($"VENDA-UPD-{DateTime.UtcNow:yyyyMMddHHmmss}"), "idem-sales-update-create", CancellationToken.None);
+
+        Assert.True(criacao.IsSuccess);
+        Assert.NotNull(criacao.Value);
+
+        var requisicaoAtualizacao = new UpdateSaleRequest(
+            DateTimeOffset.UtcNow.AddDays(1),
+            1,
+            11,
+            "Filial Norte",
+            [
+                new UpdateSaleItemRequest(1, 3),
+                new UpdateSaleItemRequest(2, 1)
+            ]);
+
+        var atualizacao = await salesService.AtualizarAsync(criacao.Value!.Id, requisicaoAtualizacao, CancellationToken.None);
+
+        Assert.True(atualizacao.IsSuccess);
+        Assert.NotNull(atualizacao.Value);
+        Assert.Equal("Filial Norte", atualizacao.Value!.FilialNome);
+
+        await using var context = CreateDbContext();
+        var eventosOutbox = await context.OutboxMessages.Where(message => message.AggregateId == criacao.Value.Id.ToString("N")).ToListAsync();
+
+        Assert.Contains(eventosOutbox, message => message.EventType == "SaleModifiedEvent");
+
+        var mongoDatabase = provider.GetRequiredService<IMongoDatabase>();
+        var auditorias = (await mongoDatabase
+            .GetCollection<SaleAuditDocument>("sale_audit")
+            .Find(FilterDefinition<SaleAuditDocument>.Empty)
+            .ToListAsync())
+            .Where(documento => documento.SaleId == criacao.Value.Id)
+            .ToList();
+
+        Assert.Contains(auditorias, auditoria => auditoria.EventType == "SaleModifiedEvent");
+    }
+
+    [Fact]
+    public async Task Cancelamentos_DevenPersistirEventosAuditoriaEIdempotencia()
+    {
+        await using var provider = CreateSalesProvider();
+        await provider.InicializarPersistenciaAsync();
+
+        await using var scope = provider.CreateAsyncScope();
+        var salesService = scope.ServiceProvider.GetRequiredService<ISalesApplicationService>();
+        var criacao = await salesService.CriarAsync(CriarRequisicaoVenda($"VENDA-CANCEL-{DateTime.UtcNow:yyyyMMddHHmmss}"), "idem-sales-cancel-create", CancellationToken.None);
+
+        Assert.True(criacao.IsSuccess);
+        Assert.NotNull(criacao.Value);
+
+        var itemId = criacao.Value!.Itens.First().Id;
+
+        var cancelamentoItem = await salesService.CancelarItemAsync(criacao.Value.Id, itemId, "idem-sales-item-cancel", CancellationToken.None);
+        var cancelamentoItemIdempotente = await salesService.CancelarItemAsync(criacao.Value.Id, itemId, "idem-sales-item-cancel", CancellationToken.None);
+        var cancelamentoVenda = await salesService.CancelarVendaAsync(criacao.Value.Id, "idem-sales-cancel", CancellationToken.None);
+        var cancelamentoVendaIdempotente = await salesService.CancelarVendaAsync(criacao.Value.Id, "idem-sales-cancel", CancellationToken.None);
+
+        Assert.True(cancelamentoItem.IsSuccess);
+        Assert.True(cancelamentoItemIdempotente.IsSuccess);
+        Assert.True(cancelamentoVenda.IsSuccess);
+        Assert.True(cancelamentoVendaIdempotente.IsSuccess);
+        Assert.NotNull(cancelamentoVenda.Value);
+        Assert.True(cancelamentoVenda.Value!.Cancelada);
+
+        await using var context = CreateDbContext();
+        var eventosOutbox = await context.OutboxMessages.Where(message => message.AggregateId == criacao.Value.Id.ToString("N")).ToListAsync();
+        var chavesIdempotencia = await context.IdempotencyEntries
+            .Where(entry => entry.Key == "idem-sales-item-cancel" || entry.Key == "idem-sales-cancel")
+            .ToListAsync();
+
+        Assert.Contains(eventosOutbox, message => message.EventType == "ItemCancelledEvent");
+        Assert.Contains(eventosOutbox, message => message.EventType == "SaleCancelledEvent");
+        Assert.Single(chavesIdempotencia, entry => entry.Scope == "sales:cancel-item");
+        Assert.Single(chavesIdempotencia, entry => entry.Scope == "sales:cancel");
+
+        var mongoDatabase = provider.GetRequiredService<IMongoDatabase>();
+        var auditorias = (await mongoDatabase
+            .GetCollection<SaleAuditDocument>("sale_audit")
+            .Find(FilterDefinition<SaleAuditDocument>.Empty)
+            .ToListAsync())
+            .Where(documento => documento.SaleId == criacao.Value.Id)
+            .ToList();
+
+        Assert.Contains(auditorias, auditoria => auditoria.EventType == "ItemCancelledEvent");
+        Assert.Contains(auditorias, auditoria => auditoria.EventType == "SaleCancelledEvent");
+    }
+
+    private static CreateSaleRequest CriarRequisicaoVenda(string numero)
+    {
+        return new CreateSaleRequest(
+            Numero: numero,
+            DataVenda: DateTimeOffset.UtcNow,
+            ClienteId: 1,
+            FilialId: 10,
+            FilialNome: "Filial Centro",
+            Itens:
+            [
+                new CreateSaleItemRequest(1, 2),
+                new CreateSaleItemRequest(2, 4)
+            ]);
+    }
+
     private ServiceProvider CreateSalesProvider()
     {
         var configuration = new ConfigurationManager();
