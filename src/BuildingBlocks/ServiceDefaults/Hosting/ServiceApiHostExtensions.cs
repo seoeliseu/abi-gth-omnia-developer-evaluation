@@ -24,6 +24,10 @@ public static class ServiceApiHostExtensions
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration
+            .AddJsonFile("appsettings.Global.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.Global.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
         builder.Host.UseSerilog((contexto, _, configuracaoLogger) =>
         {
             var urlSeq = contexto.Configuration["Observabilidade:SeqUrl"];
