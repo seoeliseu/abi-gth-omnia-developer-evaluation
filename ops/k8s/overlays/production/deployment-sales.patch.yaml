@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: developer-evaluation-sales-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: sales-api
+          image: developer-evaluation-sales-api@sha256:__SALES_API_IMAGE_DIGEST__
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

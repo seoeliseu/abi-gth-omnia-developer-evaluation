@@ -9,13 +9,11 @@ services:
     image: developer-evaluation-sales-api:latest
     container_name: developer-evaluation-sales-api
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_sales;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017
-      MongoDb__Database: developer_evaluation_sales
-      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
-      RabbitMq__QueueName: developer-evaluation.sales.webapi
+      ASPNETCORE_ENVIRONMENT: Staging
+      Observabilidade__SeqUrl: http://${SEQ_HOST:-seq}:${SEQ_PORT:-5341}
+      ConnectionStrings__Postgres: Host=${POSTGRES_HOST:-postgres};Port=${POSTGRES_PORT:-5432};Database=developer_evaluation_sales;Username=${POSTGRES_USERNAME:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      ConnectionStrings__MongoDb: mongodb://${MONGODB_HOST:-mongodb}:${MONGODB_PORT:-27017}
+      RabbitMq__ConnectionString: amqp://${RABBITMQ_USERNAME:-guest}:${RABBITMQ_PASSWORD:-guest}@${RABBITMQ_HOST:-rabbitmq}:${RABBITMQ_PORT:-5672}
     depends_on:
       postgres:
         condition: service_healthy
@@ -38,13 +36,11 @@ services:
     image: developer-evaluation-products-api:latest
     container_name: developer-evaluation-products-api
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_products;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017
-      MongoDb__Database: developer_evaluation_products
-      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
-      RabbitMq__QueueName: developer-evaluation.products.webapi
+      ASPNETCORE_ENVIRONMENT: Staging
+      Observabilidade__SeqUrl: http://${SEQ_HOST:-seq}:${SEQ_PORT:-5341}
+      ConnectionStrings__Postgres: Host=${POSTGRES_HOST:-postgres};Port=${POSTGRES_PORT:-5432};Database=developer_evaluation_products;Username=${POSTGRES_USERNAME:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      ConnectionStrings__MongoDb: mongodb://${MONGODB_HOST:-mongodb}:${MONGODB_PORT:-27017}
+      RabbitMq__ConnectionString: amqp://${RABBITMQ_USERNAME:-guest}:${RABBITMQ_PASSWORD:-guest}@${RABBITMQ_HOST:-rabbitmq}:${RABBITMQ_PORT:-5672}
     depends_on:
       postgres:
         condition: service_healthy
@@ -67,13 +63,11 @@ services:
     image: developer-evaluation-carts-api:latest
     container_name: developer-evaluation-carts-api
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_carts;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017
-      MongoDb__Database: developer_evaluation_carts
-      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
-      RabbitMq__QueueName: developer-evaluation.carts.webapi
+      ASPNETCORE_ENVIRONMENT: Staging
+      Observabilidade__SeqUrl: http://${SEQ_HOST:-seq}:${SEQ_PORT:-5341}
+      ConnectionStrings__Postgres: Host=${POSTGRES_HOST:-postgres};Port=${POSTGRES_PORT:-5432};Database=developer_evaluation_carts;Username=${POSTGRES_USERNAME:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      ConnectionStrings__MongoDb: mongodb://${MONGODB_HOST:-mongodb}:${MONGODB_PORT:-27017}
+      RabbitMq__ConnectionString: amqp://${RABBITMQ_USERNAME:-guest}:${RABBITMQ_PASSWORD:-guest}@${RABBITMQ_HOST:-rabbitmq}:${RABBITMQ_PORT:-5672}
     depends_on:
       postgres:
         condition: service_healthy
@@ -96,13 +90,11 @@ services:
     image: developer-evaluation-users-api:latest
     container_name: developer-evaluation-users-api
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_users;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017
-      MongoDb__Database: developer_evaluation_users
-      RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
-      RabbitMq__QueueName: developer-evaluation.users.webapi
+      ASPNETCORE_ENVIRONMENT: Staging
+      Observabilidade__SeqUrl: http://${SEQ_HOST:-seq}:${SEQ_PORT:-5341}
+      ConnectionStrings__Postgres: Host=${POSTGRES_HOST:-postgres};Port=${POSTGRES_PORT:-5432};Database=developer_evaluation_users;Username=${POSTGRES_USERNAME:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      ConnectionStrings__MongoDb: mongodb://${MONGODB_HOST:-mongodb}:${MONGODB_PORT:-27017}
+      RabbitMq__ConnectionString: amqp://${RABBITMQ_USERNAME:-guest}:${RABBITMQ_PASSWORD:-guest}@${RABBITMQ_HOST:-rabbitmq}:${RABBITMQ_PORT:-5672}
     depends_on:
       postgres:
         condition: service_healthy
@@ -125,11 +117,10 @@ services:
     image: developer-evaluation-auth-api:latest
     container_name: developer-evaluation-auth-api
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_auth;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017
-      MongoDb__Database: developer_evaluation_auth
+      ASPNETCORE_ENVIRONMENT: Staging
+      Observabilidade__SeqUrl: http://${SEQ_HOST:-seq}:${SEQ_PORT:-5341}
+      ConnectionStrings__Postgres: Host=${POSTGRES_HOST:-postgres};Port=${POSTGRES_PORT:-5432};Database=developer_evaluation_auth;Username=${POSTGRES_USERNAME:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      ConnectionStrings__MongoDb: mongodb://${MONGODB_HOST:-mongodb}:${MONGODB_PORT:-27017}
     depends_on:
       postgres:
         condition: service_healthy
@@ -144,16 +135,16 @@ services:
     image: postgres:16
     container_name: developer-evaluation-postgres
     environment:
-      POSTGRES_DB: developer_evaluation_sales
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DEFAULT_DB:-developer_evaluation_sales}
+      POSTGRES_USER: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./ops/docker/postgres-init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d developer_evaluation_sales"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres} -d ${POSTGRES_DEFAULT_DB:-developer_evaluation_sales}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -169,6 +160,9 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: developer-evaluation-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
     ports:
       - "5672:5672"
       - "15672:15672"

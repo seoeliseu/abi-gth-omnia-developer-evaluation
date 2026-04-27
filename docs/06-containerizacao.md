@@ -30,7 +30,8 @@ Manter uma pasta `ops/k8s/` com artefatos base:
 
 - `namespace.yaml`
 - `configmap.yaml` com configuração por serviço.
-- `secrets.example.yaml`
+- `secrets.staging.example.yaml`
+- `secrets.production.example.yaml`
 - `deployment-api.yaml` com deployments dos cinco serviços.
 - `service-api.yaml` com services dos cinco serviços.
 - `ingress.yaml` opcional
@@ -48,3 +49,13 @@ Manter uma pasta `ops/k8s/` com artefatos base:
 - Seq como destino de consulta e retenção operacional no ambiente local de entrega.
 - Containers stateless.
 - Persistência delegada a serviços externos gerenciados ou volumes dedicados.
+
+## Organização de Ambientes
+
+- O `docker-compose.yml` executa as APIs com `ASPNETCORE_ENVIRONMENT=Staging`.
+- O arquivo `.env.example` define os nomes padronizados de variáveis para Compose.
+- O diretório `ops/k8s/` permanece como base dos manifests.
+- A base reutilizável de Kustomize fica em `ops/k8s/base/`.
+- Os overlays `ops/k8s/overlays/staging/` e `ops/k8s/overlays/production/` explicitam o ambiente alvo via Kustomize.
+- Os overlays também diferenciam `replicas`, `resources`, HPA e estratégia de imagem entre `staging` e `production`.
+- Os arquivos `secrets.staging.example.yaml` e `secrets.production.example.yaml` mantêm apenas placeholders padronizados, para preenchimento pelo mecanismo de segredo do ambiente.

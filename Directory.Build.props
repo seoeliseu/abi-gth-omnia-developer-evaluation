@@ -16,12 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$([System.String]::Copy('$(MSBuildProjectName)').EndsWith('.WebApi')) == 'True'">
-    <Content Include="$(MSBuildThisFileDirectory)src\BuildingBlocks\ServiceDefaults\Configuration\appsettings.Global.json"
-             Link="appsettings.Global.json"
-             CopyToOutputDirectory="PreserveNewest"
-             CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="$(MSBuildThisFileDirectory)src\BuildingBlocks\ServiceDefaults\Configuration\appsettings.Global.Development.json"
-             Link="appsettings.Global.Development.json"
+    <Content Include="$(MSBuildThisFileDirectory)src\BuildingBlocks\ServiceDefaults\Configuration\appsettings.Global*.json"
+             Link="%(Filename)%(Extension)"
              CopyToOutputDirectory="PreserveNewest"
              CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>

@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: developer-evaluation-auth-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: auth-api
+          image: developer-evaluation-auth-api@sha256:__AUTH_API_IMAGE_DIGEST__
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

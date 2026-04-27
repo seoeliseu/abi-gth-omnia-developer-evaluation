@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: developer-evaluation-carts-api-config
+data:
+  ASPNETCORE_ENVIRONMENT: Staging

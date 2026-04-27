@@ -32,11 +32,16 @@
 - [x] Configuração Kubernetes preparada com segredo de PostgreSQL por serviço.
 - [x] MongoDB configurado com database lógico por serviço no ambiente operacional.
 - [x] Script de bootstrap do PostgreSQL cria as databases esperadas no Compose.
+- [x] Overlay de `production` com HPA por serviço.
+- [x] Overlay de `production` com imagens travadas por digest.
 
 ## Validação executada
 
 - [x] `dotnet build .\Ambev.DeveloperEvaluation.slnx`
 - [x] `dotnet test .\Ambev.DeveloperEvaluation.slnx --no-build`
+- [x] `docker compose config`
+- [x] `kubectl kustomize .\ops\k8s\overlays\staging`
+- [x] `kubectl kustomize .\ops\k8s\overlays\production`
 
 ## Observações finais
 
