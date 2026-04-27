@@ -47,6 +47,23 @@ public class SalesApplicationServiceTests
         Assert.Single(resultado.Value.Data);
     }
 
+    [Fact]
+    public async Task Deve_remover_venda_existente()
+    {
+        var service = CriarServico();
+        var criacao = await service.CriarAsync(
+            new CreateSaleRequest("VEN-DELETE", DateTimeOffset.UtcNow, 1, 10, "Filial 1", [new CreateSaleItemRequest(1, 2)]),
+            null,
+            CancellationToken.None);
+
+        var remocao = await service.RemoverAsync(criacao.Value!.Id, CancellationToken.None);
+        var consulta = await service.ObterPorIdAsync(criacao.Value.Id, CancellationToken.None);
+
+        Assert.True(remocao.IsSuccess);
+        Assert.True(consulta.IsFailure);
+        Assert.Equal(ResultErrorType.NotFound, consulta.ErrorType);
+    }
+
     private static ISalesApplicationService CriarServico()
     {
         return new SalesApplicationService(
@@ -69,6 +86,12 @@ public class SalesApplicationServiceTests
         public Task AtualizarAsync(Sale sale, CancellationToken cancellationToken)
         {
             _sales[sale.Id] = sale;
+            return Task.CompletedTask;
+        }
+
+        public Task RemoverAsync(Sale sale, CancellationToken cancellationToken)
+        {
+            _sales.Remove(sale.Id);
             return Task.CompletedTask;
         }
 

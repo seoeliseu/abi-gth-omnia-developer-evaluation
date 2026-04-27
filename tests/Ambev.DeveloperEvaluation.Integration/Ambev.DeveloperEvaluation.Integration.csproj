@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -25,10 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.IoC\Ambev.DeveloperEvaluation.IoC.csproj" />
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.ORM\Ambev.DeveloperEvaluation.ORM.csproj" />
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Sales.Application\Ambev.DeveloperEvaluation.Sales.Application.csproj" />
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Sales.Domain\Ambev.DeveloperEvaluation.Sales.Domain.csproj" />
+    <ProjectReference Include="..\..\src\BuildingBlocks\IoC\Ambev.DeveloperEvaluation.IoC.csproj" />
+    <ProjectReference Include="..\..\src\BuildingBlocks\ORM\Ambev.DeveloperEvaluation.ORM.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Sales\Application\Ambev.DeveloperEvaluation.Sales.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Sales\Domain\Ambev.DeveloperEvaluation.Sales.Domain.csproj" />
   </ItemGroup>
 
 </Project>

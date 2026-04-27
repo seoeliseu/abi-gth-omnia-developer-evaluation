@@ -73,6 +73,35 @@ public sealed class SalesApiFunctionalTests : IClassFixture<SalesApiFactory>
         Assert.Equal(2, vendaConsultada.Itens.Count);
     }
 
+    [Fact]
+    public async Task DeleteSales_DeveExcluirVendaECausarNotFoundNaConsulta()
+    {
+        var requisicao = new
+        {
+            numero = $"VENDA-DEL-{DateTime.UtcNow:yyyyMMddHHmmssfff}",
+            dataVenda = DateTimeOffset.UtcNow,
+            clienteId = 1,
+            filialId = 10,
+            filialNome = "Filial Centro",
+            itens = new[]
+            {
+                new { productId = 1L, quantidade = 2 }
+            }
+        };
+
+        using var criacaoResposta = await _client.PostAsJsonAsync("/api/sales", requisicao);
+        var venda = await criacaoResposta.Content.ReadFromJsonAsync<SaleDetailResponse>(JsonOptions);
+
+        Assert.Equal(HttpStatusCode.Created, criacaoResposta.StatusCode);
+        Assert.NotNull(venda);
+
+        using var remocaoResposta = await _client.DeleteAsync($"/api/sales/{venda!.Id}");
+        using var consultaResposta = await _client.GetAsync($"/api/sales/{venda.Id}");
+
+        Assert.Equal(HttpStatusCode.OK, remocaoResposta.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, consultaResposta.StatusCode);
+    }
+
     private sealed record SaleDetailResponse(Guid Id, string Numero, decimal ValorTotal, IReadOnlyCollection<SaleItemResponse> Itens);
 
     private sealed record SaleItemResponse(Guid Id, long ProductId, int Quantidade, decimal ValorTotal, bool Cancelado);

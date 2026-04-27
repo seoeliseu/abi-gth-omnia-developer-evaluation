@@ -4,16 +4,16 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Sales.WebApi/Ambev.DeveloperEvaluation.Sales.WebApi.csproj
+        SERVICE_PROJECT: src/Modules/Sales/WebApi/Ambev.DeveloperEvaluation.Sales.WebApi.csproj
         SERVICE_DLL: Ambev.DeveloperEvaluation.Sales.WebApi.dll
     image: developer-evaluation-sales-api:latest
     container_name: developer-evaluation-sales-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
-      MongoDb__Database: developer_evaluation
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_sales;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017
+      MongoDb__Database: developer_evaluation_sales
       RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
       RabbitMq__QueueName: developer-evaluation.sales.webapi
     depends_on:
@@ -33,16 +33,16 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Products.WebApi/Ambev.DeveloperEvaluation.Products.WebApi.csproj
+        SERVICE_PROJECT: src/Modules/Products/WebApi/Ambev.DeveloperEvaluation.Products.WebApi.csproj
         SERVICE_DLL: Ambev.DeveloperEvaluation.Products.WebApi.dll
     image: developer-evaluation-products-api:latest
     container_name: developer-evaluation-products-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
-      MongoDb__Database: developer_evaluation
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_products;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017
+      MongoDb__Database: developer_evaluation_products
       RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
       RabbitMq__QueueName: developer-evaluation.products.webapi
     depends_on:
@@ -62,16 +62,16 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Carts.WebApi/Ambev.DeveloperEvaluation.Carts.WebApi.csproj
+        SERVICE_PROJECT: src/Modules/Carts/WebApi/Ambev.DeveloperEvaluation.Carts.WebApi.csproj
         SERVICE_DLL: Ambev.DeveloperEvaluation.Carts.WebApi.dll
     image: developer-evaluation-carts-api:latest
     container_name: developer-evaluation-carts-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
-      MongoDb__Database: developer_evaluation
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_carts;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017
+      MongoDb__Database: developer_evaluation_carts
       RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
       RabbitMq__QueueName: developer-evaluation.carts.webapi
     depends_on:
@@ -91,16 +91,16 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Users.WebApi/Ambev.DeveloperEvaluation.Users.WebApi.csproj
+        SERVICE_PROJECT: src/Modules/Users/WebApi/Ambev.DeveloperEvaluation.Users.WebApi.csproj
         SERVICE_DLL: Ambev.DeveloperEvaluation.Users.WebApi.dll
     image: developer-evaluation-users-api:latest
     container_name: developer-evaluation-users-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
-      MongoDb__Database: developer_evaluation
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_users;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017
+      MongoDb__Database: developer_evaluation_users
       RabbitMq__ConnectionString: amqp://guest:guest@rabbitmq:5672
       RabbitMq__QueueName: developer-evaluation.users.webapi
     depends_on:
@@ -120,16 +120,16 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE_PROJECT: src/Ambev.DeveloperEvaluation.Auth.WebApi/Ambev.DeveloperEvaluation.Auth.WebApi.csproj
+        SERVICE_PROJECT: src/Modules/Auth/WebApi/Ambev.DeveloperEvaluation.Auth.WebApi.csproj
         SERVICE_DLL: Ambev.DeveloperEvaluation.Auth.WebApi.dll
     image: developer-evaluation-auth-api:latest
     container_name: developer-evaluation-auth-api
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       Observabilidade__SeqUrl: http://seq:5341
-      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation;Username=postgres;Password=postgres
-      ConnectionStrings__MongoDb: mongodb://mongodb:27017/developer_evaluation
-      MongoDb__Database: developer_evaluation
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=developer_evaluation_auth;Username=postgres;Password=postgres
+      ConnectionStrings__MongoDb: mongodb://mongodb:27017
+      MongoDb__Database: developer_evaluation_auth
     depends_on:
       postgres:
         condition: service_healthy
@@ -144,15 +144,16 @@ services:
     image: postgres:16
     container_name: developer-evaluation-postgres
     environment:
-      POSTGRES_DB: developer_evaluation
+      POSTGRES_DB: developer_evaluation_sales
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./ops/docker/postgres-init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d developer_evaluation"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d developer_evaluation_sales"]
       interval: 10s
       timeout: 5s
       retries: 10

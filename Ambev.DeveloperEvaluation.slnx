@@ -1,30 +1,42 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/Ambev.DeveloperEvaluation.Auth.Application/Ambev.DeveloperEvaluation.Auth.Application.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Auth.Domain/Ambev.DeveloperEvaluation.Auth.Domain.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Auth.Infrastructure/Ambev.DeveloperEvaluation.Auth.Infrastructure.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Auth.WebApi/Ambev.DeveloperEvaluation.Auth.WebApi.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Carts.Application/Ambev.DeveloperEvaluation.Carts.Application.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Carts.Domain/Ambev.DeveloperEvaluation.Carts.Domain.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Carts.Infrastructure/Ambev.DeveloperEvaluation.Carts.Infrastructure.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Carts.WebApi/Ambev.DeveloperEvaluation.Carts.WebApi.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Common/Ambev.DeveloperEvaluation.Common.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Domain/Ambev.DeveloperEvaluation.Domain.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.IoC/Ambev.DeveloperEvaluation.IoC.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.ORM/Ambev.DeveloperEvaluation.ORM.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Products.Application/Ambev.DeveloperEvaluation.Products.Application.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Products.Domain/Ambev.DeveloperEvaluation.Products.Domain.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Products.Infrastructure/Ambev.DeveloperEvaluation.Products.Infrastructure.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Products.WebApi/Ambev.DeveloperEvaluation.Products.WebApi.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Sales.Application/Ambev.DeveloperEvaluation.Sales.Application.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Sales.Domain/Ambev.DeveloperEvaluation.Sales.Domain.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Sales.Infrastructure/Ambev.DeveloperEvaluation.Sales.Infrastructure.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Sales.WebApi/Ambev.DeveloperEvaluation.Sales.WebApi.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.ServiceDefaults/Ambev.DeveloperEvaluation.ServiceDefaults.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Users.Application/Ambev.DeveloperEvaluation.Users.Application.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Users.Domain/Ambev.DeveloperEvaluation.Users.Domain.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Users.Infrastructure/Ambev.DeveloperEvaluation.Users.Infrastructure.csproj" />
-    <Project Path="src/Ambev.DeveloperEvaluation.Users.WebApi/Ambev.DeveloperEvaluation.Users.WebApi.csproj" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/Common/Ambev.DeveloperEvaluation.Common.csproj" />
+    <Project Path="src/BuildingBlocks/Domain/Ambev.DeveloperEvaluation.Domain.csproj" />
+    <Project Path="src/BuildingBlocks/IoC/Ambev.DeveloperEvaluation.IoC.csproj" />
+    <Project Path="src/BuildingBlocks/ORM/Ambev.DeveloperEvaluation.ORM.csproj" />
+    <Project Path="src/BuildingBlocks/ServiceDefaults/Ambev.DeveloperEvaluation.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Auth/">
+    <Project Path="src/Modules/Auth/Application/Ambev.DeveloperEvaluation.Auth.Application.csproj" />
+    <Project Path="src/Modules/Auth/Domain/Ambev.DeveloperEvaluation.Auth.Domain.csproj" />
+    <Project Path="src/Modules/Auth/Infrastructure/Ambev.DeveloperEvaluation.Auth.Infrastructure.csproj" />
+    <Project Path="src/Modules/Auth/WebApi/Ambev.DeveloperEvaluation.Auth.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Carts/">
+    <Project Path="src/Modules/Carts/Application/Ambev.DeveloperEvaluation.Carts.Application.csproj" />
+    <Project Path="src/Modules/Carts/Domain/Ambev.DeveloperEvaluation.Carts.Domain.csproj" />
+    <Project Path="src/Modules/Carts/Infrastructure/Ambev.DeveloperEvaluation.Carts.Infrastructure.csproj" />
+    <Project Path="src/Modules/Carts/WebApi/Ambev.DeveloperEvaluation.Carts.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Products/">
+    <Project Path="src/Modules/Products/Application/Ambev.DeveloperEvaluation.Products.Application.csproj" />
+    <Project Path="src/Modules/Products/Domain/Ambev.DeveloperEvaluation.Products.Domain.csproj" />
+    <Project Path="src/Modules/Products/Infrastructure/Ambev.DeveloperEvaluation.Products.Infrastructure.csproj" />
+    <Project Path="src/Modules/Products/WebApi/Ambev.DeveloperEvaluation.Products.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Sales/">
+    <Project Path="src/Modules/Sales/Application/Ambev.DeveloperEvaluation.Sales.Application.csproj" />
+    <Project Path="src/Modules/Sales/Domain/Ambev.DeveloperEvaluation.Sales.Domain.csproj" />
+    <Project Path="src/Modules/Sales/Infrastructure/Ambev.DeveloperEvaluation.Sales.Infrastructure.csproj" />
+    <Project Path="src/Modules/Sales/WebApi/Ambev.DeveloperEvaluation.Sales.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Users/">
+    <Project Path="src/Modules/Users/Application/Ambev.DeveloperEvaluation.Users.Application.csproj" />
+    <Project Path="src/Modules/Users/Domain/Ambev.DeveloperEvaluation.Users.Domain.csproj" />
+    <Project Path="src/Modules/Users/Infrastructure/Ambev.DeveloperEvaluation.Users.Infrastructure.csproj" />
+    <Project Path="src/Modules/Users/WebApi/Ambev.DeveloperEvaluation.Users.WebApi.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Ambev.DeveloperEvaluation.Functional/Ambev.DeveloperEvaluation.Functional.csproj" />

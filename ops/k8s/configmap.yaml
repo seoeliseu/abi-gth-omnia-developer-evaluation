@@ -6,7 +6,7 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: Development
   Observabilidade__SeqUrl: http://seq:5341
-  MongoDb__Database: developer_evaluation
+  MongoDb__Database: developer_evaluation_sales
   RabbitMq__QueueName: developer-evaluation.sales.webapi
 ---
 apiVersion: v1
@@ -17,7 +17,7 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: Development
   Observabilidade__SeqUrl: http://seq:5341
-  MongoDb__Database: developer_evaluation
+  MongoDb__Database: developer_evaluation_products
   RabbitMq__QueueName: developer-evaluation.products.webapi
 ---
 apiVersion: v1
@@ -28,7 +28,7 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: Development
   Observabilidade__SeqUrl: http://seq:5341
-  MongoDb__Database: developer_evaluation
+  MongoDb__Database: developer_evaluation_carts
   RabbitMq__QueueName: developer-evaluation.carts.webapi
 ---
 apiVersion: v1
@@ -39,7 +39,7 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: Development
   Observabilidade__SeqUrl: http://seq:5341
-  MongoDb__Database: developer_evaluation
+  MongoDb__Database: developer_evaluation_users
   RabbitMq__QueueName: developer-evaluation.users.webapi
 ---
 apiVersion: v1
@@ -50,4 +50,4 @@ metadata:
 data:
   ASPNETCORE_ENVIRONMENT: Development
   Observabilidade__SeqUrl: http://seq:5341
-  MongoDb__Database: developer_evaluation
+  MongoDb__Database: developer_evaluation_auth

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -19,11 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Auth.WebApi\Ambev.DeveloperEvaluation.Auth.WebApi.csproj" />
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Carts.WebApi\Ambev.DeveloperEvaluation.Carts.WebApi.csproj" />
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Products.WebApi\Ambev.DeveloperEvaluation.Products.WebApi.csproj" />
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Sales.WebApi\Ambev.DeveloperEvaluation.Sales.WebApi.csproj" />
-    <ProjectReference Include="..\..\src\Ambev.DeveloperEvaluation.Users.WebApi\Ambev.DeveloperEvaluation.Users.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Auth\WebApi\Ambev.DeveloperEvaluation.Auth.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Carts\WebApi\Ambev.DeveloperEvaluation.Carts.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Products\WebApi\Ambev.DeveloperEvaluation.Products.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Sales\WebApi\Ambev.DeveloperEvaluation.Sales.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Users\WebApi\Ambev.DeveloperEvaluation.Users.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

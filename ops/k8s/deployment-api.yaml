@@ -23,7 +23,9 @@ spec:
             - configMapRef:
                 name: developer-evaluation-sales-api-config
             - secretRef:
-                name: developer-evaluation-shared-secrets
+              name: developer-evaluation-shared-secrets
+            - secretRef:
+              name: developer-evaluation-sales-db-secret
           readinessProbe:
             httpGet:
               path: /health/ready
@@ -62,7 +64,9 @@ spec:
             - configMapRef:
                 name: developer-evaluation-products-api-config
             - secretRef:
-                name: developer-evaluation-shared-secrets
+              name: developer-evaluation-shared-secrets
+            - secretRef:
+              name: developer-evaluation-products-db-secret
           readinessProbe:
             httpGet:
               path: /health/ready
@@ -101,7 +105,9 @@ spec:
             - configMapRef:
                 name: developer-evaluation-carts-api-config
             - secretRef:
-                name: developer-evaluation-shared-secrets
+              name: developer-evaluation-shared-secrets
+            - secretRef:
+              name: developer-evaluation-carts-db-secret
           readinessProbe:
             httpGet:
               path: /health/ready
@@ -140,7 +146,9 @@ spec:
             - configMapRef:
                 name: developer-evaluation-users-api-config
             - secretRef:
-                name: developer-evaluation-shared-secrets
+              name: developer-evaluation-shared-secrets
+            - secretRef:
+              name: developer-evaluation-users-db-secret
           readinessProbe:
             httpGet:
               path: /health/ready
@@ -179,7 +187,9 @@ spec:
             - configMapRef:
                 name: developer-evaluation-auth-api-config
             - secretRef:
-                name: developer-evaluation-shared-secrets
+              name: developer-evaluation-shared-secrets
+            - secretRef:
+              name: developer-evaluation-auth-db-secret
           readinessProbe:
             httpGet:
               path: /health/ready
