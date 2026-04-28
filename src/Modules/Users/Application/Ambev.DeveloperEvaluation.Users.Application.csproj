@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Common\Ambev.DeveloperEvaluation.Common.csproj" />
+    <ProjectReference Include="..\Domain\Ambev.DeveloperEvaluation.Users.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

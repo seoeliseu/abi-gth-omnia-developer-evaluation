@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "docker: compose up sequential",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "scripts/compose-up-sequential.ps1"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

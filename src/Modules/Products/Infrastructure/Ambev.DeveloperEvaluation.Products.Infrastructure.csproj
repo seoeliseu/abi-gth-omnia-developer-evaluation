@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\ORM\Ambev.DeveloperEvaluation.ORM.csproj" />
+    <ProjectReference Include="..\Application\Ambev.DeveloperEvaluation.Products.Application.csproj" />
+    <ProjectReference Include="..\Domain\Ambev.DeveloperEvaluation.Products.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

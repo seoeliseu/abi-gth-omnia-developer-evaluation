@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Testcontainers.MongoDb" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.RabbitMq" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Auth\WebApi\Ambev.DeveloperEvaluation.Auth.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Carts\WebApi\Ambev.DeveloperEvaluation.Carts.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Products\WebApi\Ambev.DeveloperEvaluation.Products.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Sales\WebApi\Ambev.DeveloperEvaluation.Sales.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Users\WebApi\Ambev.DeveloperEvaluation.Users.WebApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Auth\Infrastructure\Ambev.DeveloperEvaluation.Auth.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Carts\Infrastructure\Ambev.DeveloperEvaluation.Carts.Infrastructure.csproj" />
+    <ProjectReference Include="..\Common\Ambev.DeveloperEvaluation.Common.csproj" />
+    <ProjectReference Include="..\Domain\Ambev.DeveloperEvaluation.Domain.csproj" />
+    <ProjectReference Include="..\ORM\Ambev.DeveloperEvaluation.ORM.csproj" />
+    <ProjectReference Include="..\..\Modules\Products\Infrastructure\Ambev.DeveloperEvaluation.Products.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Sales\Infrastructure\Ambev.DeveloperEvaluation.Sales.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Modules\Users\Infrastructure\Ambev.DeveloperEvaluation.Users.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+    <PackageReference Include="Polly.Core" />
+    <PackageReference Include="Rebus.RabbitMq" />
+    <PackageReference Include="Rebus.ServiceProvider" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+  </ItemGroup>
+
+</Project>

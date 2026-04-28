@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\ORM\Ambev.DeveloperEvaluation.ORM.csproj" />
+    <ProjectReference Include="..\Application\Ambev.DeveloperEvaluation.Users.Application.csproj" />
+    <ProjectReference Include="..\Domain\Ambev.DeveloperEvaluation.Users.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
