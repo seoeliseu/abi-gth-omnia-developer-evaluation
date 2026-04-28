@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <ProjectReference Include="..\..\..\BuildingBlocks\ORM\Ambev.DeveloperEvaluation.ORM.csproj" />
     <ProjectReference Include="..\Application\Ambev.DeveloperEvaluation.Auth.Application.csproj" />
     <ProjectReference Include="..\Domain\Ambev.DeveloperEvaluation.Auth.Domain.csproj" />

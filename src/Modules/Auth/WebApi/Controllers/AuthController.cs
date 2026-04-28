@@ -1,5 +1,8 @@
+using AutoMapper;
 using Ambev.DeveloperEvaluation.Auth.Application.Contracts;
+using Ambev.DeveloperEvaluation.Auth.Application.Handlers;
 using Ambev.DeveloperEvaluation.ServiceDefaults.Resultados;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +14,13 @@ namespace Ambev.DeveloperEvaluation.Auth.WebApi.Controllers;
 [Route("api/auth")]
 public sealed class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly IMapper _mapper;
+    private readonly ISender _sender;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IMapper mapper, ISender sender)
     {
-        _authService = authService;
+        _mapper = mapper;
+        _sender = sender;
     }
 
     [HttpPost("login")]
@@ -24,7 +29,7 @@ public sealed class AuthController : ControllerBase
     [RequestTimeout("sales-comandos")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest requisicao, CancellationToken cancellationToken)
     {
-        var resultado = await _authService.AutenticarAsync(requisicao, cancellationToken);
-        return this.ParaActionResult(resultado, autenticado => Ok(new { token = autenticado.Token, tokenType = "Bearer", expiresAt = autenticado.ExpiraEm }));
+        var resultado = await _sender.Send(new LoginCommand(requisicao), cancellationToken);
+        return this.ParaActionResult(resultado, autenticado => Ok(_mapper.Map<LoginResponse>(autenticado)));
     }
 }

@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="MediatR" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Common\Ambev.DeveloperEvaluation.Common.csproj" />
     <ProjectReference Include="..\Domain\Ambev.DeveloperEvaluation.Auth.Domain.csproj" />
   </ItemGroup>

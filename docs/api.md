@@ -67,7 +67,9 @@ Exemplo de response `200 OK`:
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
+  "expiresAt": "2026-04-27T21:42:06.2210718-03:00"
 }
 ```
 
@@ -109,7 +111,6 @@ Exemplo de response `200 OK`:
       "id": 1,
       "email": "john@example.com",
       "username": "johnd",
-      "password": "123456",
       "name": {
         "firstname": "John",
         "lastname": "Doe"
@@ -179,7 +180,6 @@ Exemplo de response `201 Created`:
   "id": 1,
   "email": "john@example.com",
   "username": "johnd",
-  "password": "123456",
   "name": {
     "firstname": "John",
     "lastname": "Doe"
@@ -219,7 +219,6 @@ Exemplo de response `200 OK`:
   "id": 1,
   "email": "john@example.com",
   "username": "johnd",
-  "password": "123456",
   "name": {
     "firstname": "John",
     "lastname": "Doe"
@@ -270,7 +269,6 @@ Exemplo de response `200 OK`:
   "id": 1,
   "email": "john@example.com",
   "username": "johnd",
-  "password": "123456",
   "name": {
     "firstname": "John",
     "lastname": "Doe"
