@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Common.Results;
+using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
 using Ambev.DeveloperEvaluation.Users.Application.Common;
 using Ambev.DeveloperEvaluation.Users.Application.Contracts;
@@ -9,10 +10,12 @@ namespace Ambev.DeveloperEvaluation.ORM.Persistence.Services;
 public sealed class UsersServicePersistente : IUsersService
 {
     private readonly DeveloperEvaluationDbContext _context;
+    private readonly IPasswordSecurityService _passwordSecurityService;
 
-    public UsersServicePersistente(DeveloperEvaluationDbContext context)
+    public UsersServicePersistente(DeveloperEvaluationDbContext context, IPasswordSecurityService passwordSecurityService)
     {
         _context = context;
+        _passwordSecurityService = passwordSecurityService;
     }
 
     public async Task<Result<UserReference>> ObterPorIdAsync(long usuarioId, CancellationToken cancellationToken)
@@ -94,19 +97,20 @@ public sealed class UsersServicePersistente : IUsersService
     }
 
     private static UserReference MapearReferencia(UserEntity usuario) => new(usuario.Id, usuario.Username, usuario.Email, usuario.Status, usuario.Role, usuario.Status == "Active");
-    private static UserDetail MapearDetalhe(UserEntity usuario) => new(usuario.Id, usuario.Email, usuario.Username, usuario.Password, new UserNameData(usuario.Firstname, usuario.Lastname), new UserAddressData(usuario.City, usuario.Street, usuario.Number, usuario.Zipcode, new UserGeolocationData(usuario.GeoLat, usuario.GeoLong)), usuario.Phone, usuario.Status, usuario.Role);
-    private static UserEntity MapearEntidade(long id, UpsertUserRequest requisicao)
+    private static UserDetail MapearDetalhe(UserEntity usuario) => new(usuario.Id, usuario.Email, usuario.Username, new UserNameData(usuario.Firstname, usuario.Lastname), new UserAddressData(usuario.City, usuario.Street, usuario.Number, usuario.Zipcode, new UserGeolocationData(usuario.GeoLat, usuario.GeoLong)), usuario.Phone, usuario.Status, usuario.Role);
+    private UserEntity MapearEntidade(long id, UpsertUserRequest requisicao)
     {
         var entidade = new UserEntity();
         if (id > 0) entidade.Id = id;
         Aplicar(entidade, requisicao);
         return entidade;
     }
-    private static void Aplicar(UserEntity entidade, UpsertUserRequest requisicao)
+
+    private void Aplicar(UserEntity entidade, UpsertUserRequest requisicao)
     {
         entidade.Email = requisicao.Email;
         entidade.Username = requisicao.Username;
-        entidade.Password = requisicao.Password;
+        entidade.Password = _passwordSecurityService.HashPassword(requisicao.Password);
         entidade.Firstname = requisicao.Name.Firstname;
         entidade.Lastname = requisicao.Name.Lastname;
         entidade.City = requisicao.Address.City;

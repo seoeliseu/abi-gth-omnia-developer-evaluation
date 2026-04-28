@@ -124,7 +124,7 @@ public class SalesApplicationServiceTests
         {
             IReadOnlyCollection<UserDetail> usuarios =
             [
-                new UserDetail(1, "email@example.com", "usuario1", "123456", new UserNameData("Usuario", "Um"), new UserAddressData("São Paulo", "Rua A", 1, "01000-000", new UserGeolocationData("-23.55", "-46.63")), "11999999999", "Active", "Customer")
+                new UserDetail(1, "email@example.com", "usuario1", new UserNameData("Usuario", "Um"), new UserAddressData("São Paulo", "Rua A", 1, "01000-000", new UserGeolocationData("-23.55", "-46.63")), "11999999999", "Active", "Customer")
             ];
 
             var paged = new Ambev.DeveloperEvaluation.Users.Application.Common.PagedResult<UserDetail>(usuarios, usuarios.Count, 1, 1);
@@ -133,19 +133,19 @@ public class SalesApplicationServiceTests
 
         public Task<Result<UserDetail>> ObterDetalhePorIdAsync(long usuarioId, CancellationToken cancellationToken)
         {
-            var usuario = new UserDetail(usuarioId, "email@example.com", $"usuario{usuarioId}", "123456", new UserNameData("Usuario", "Teste"), new UserAddressData("São Paulo", "Rua A", 1, "01000-000", new UserGeolocationData("-23.55", "-46.63")), "11999999999", "Active", "Customer");
+            var usuario = new UserDetail(usuarioId, "email@example.com", $"usuario{usuarioId}", new UserNameData("Usuario", "Teste"), new UserAddressData("São Paulo", "Rua A", 1, "01000-000", new UserGeolocationData("-23.55", "-46.63")), "11999999999", "Active", "Customer");
             return Task.FromResult(Result<UserDetail>.Success(usuario));
         }
 
         public Task<Result<UserDetail>> CriarAsync(UpsertUserRequest requisicao, CancellationToken cancellationToken)
         {
-            var usuario = new UserDetail(99, requisicao.Email, requisicao.Username, requisicao.Password, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
+            var usuario = new UserDetail(99, requisicao.Email, requisicao.Username, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
             return Task.FromResult(Result<UserDetail>.Success(usuario));
         }
 
         public Task<Result<UserDetail>> AtualizarAsync(long usuarioId, UpsertUserRequest requisicao, CancellationToken cancellationToken)
         {
-            var usuario = new UserDetail(usuarioId, requisicao.Email, requisicao.Username, requisicao.Password, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
+            var usuario = new UserDetail(usuarioId, requisicao.Email, requisicao.Username, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
             return Task.FromResult(Result<UserDetail>.Success(usuario));
         }
 

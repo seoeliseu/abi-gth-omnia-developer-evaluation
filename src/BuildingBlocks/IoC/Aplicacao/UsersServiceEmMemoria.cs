@@ -132,7 +132,7 @@ public sealed class UsersServiceEmMemoria : IUsersService
 
     private static UserDetail MapearDetalhe(long id, UpsertUserRequest requisicao)
     {
-        return new UserDetail(id, requisicao.Email, requisicao.Username, requisicao.Password, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
+        return new UserDetail(id, requisicao.Email, requisicao.Username, requisicao.Name, requisicao.Address, requisicao.Phone, requisicao.Status, requisicao.Role);
     }
 
     private static Result<UserDetail>? Validar(UpsertUserRequest requisicao)
@@ -193,7 +193,6 @@ public sealed class UsersServiceEmMemoria : IUsersService
             id,
             email,
             username,
-            "123456",
             new UserNameData(char.ToUpperInvariant(username[0]) + username[1..], "Doe"),
             new UserAddressData("São Paulo", "Rua Exemplo", (int)id * 10, "01000-000", new UserGeolocationData("-23.5505", "-46.6333")),
             "11999999999",

@@ -1,127 +1,120 @@
 # abi-gth-omnia-developer-evaluation
 
-Backend de gestão de vendas para o desafio técnico, implementado em .NET 8 com DDD, `Result<T>`, PostgreSQL, MongoDB, RabbitMQ, Docker Compose e manifests base para Kubernetes.
+Backend de gestão de vendas implementado em .NET 8, com separação por contextos de negócio, mensageria com RabbitMQ, persistência em PostgreSQL e MongoDB, cache-aside com Redis para catálogo de produtos, observabilidade com Seq e execução local via Docker Compose.
 
-## O que está entregue
+## Visão do projeto
 
-- Cinco hosts HTTP: `Sales`, `Products`, `Carts`, `Users` e `Auth`.
-- CRUD de `Sales`, incluindo remoção explícita e cancelamentos de venda e item.
-- Regras de desconto por quantidade, idempotência, outbox e eventos de integração.
-- `ProblemDetails`, `correlationId`, `traceId`, rate limit, readiness/liveness e resiliência com Polly.
-- Testes unitários, de integração e funcionais com Testcontainers.
+O repositório entrega cinco APIs:
 
-## Estrutura do repositório
+- `Sales`
+- `Products`
+- `Carts`
+- `Users`
+- `Auth`
 
-- `src/BuildingBlocks`: cross-cutting concerns, ORM, IoC e borda HTTP.
-- `src/Modules`: módulos `Auth`, `Carts`, `Products`, `Sales` e `Users`.
-- `tests`: projetos `Unit`, `Integration` e `Functional`.
-- `docs`: visão geral, requisitos, arquitetura, dados, containerização e checklist final.
-- `ops/k8s`: manifests base para Kubernetes.
+Além do CRUD dos contextos principais, a solução inclui:
+
+- regras de negócio de vendas com desconto por quantidade;
+- idempotência em comandos críticos de `Sales`;
+- outbox para publicação confiável de eventos;
+- consumidores idempotentes com deduplicação persistida;
+- DLQ explícita por fila do Rebus;
+- health checks, `ProblemDetails`, `correlationId`, `traceId`, rate limiting e políticas de resiliência.
+
+## Documentação
+
+- Arquitetura: [docs/arquitetura.md](c:/r/abi-gth-omnia-developer-evaluation/docs/arquitetura.md)
+- Estrutura de pastas: [docs/estrutura-de-pastas.md](c:/r/abi-gth-omnia-developer-evaluation/docs/estrutura-de-pastas.md)
+- API HTTP: [docs/api.md](c:/r/abi-gth-omnia-developer-evaluation/docs/api.md)
 
 ## Pré-requisitos
 
-- .NET SDK 8.
-- Docker Desktop ou Docker Engine com Compose.
-- Porta `5432` livre para PostgreSQL local do Compose.
-- Portas `8081` a `8085`, `15672` e `5341` livres.
+- .NET SDK 8
+- Docker Desktop ou Docker Engine com Compose
+- portas `5432`, `5341`, `5672`, `15672` e `8081` a `8085` disponíveis
 
-## Configuração local
+## Como iniciar
 
-Não há arquivo `.env` obrigatório para rodar localmente com o Compose padrão.
+### Caminho recomendado no Windows com Docker Desktop
 
-O `docker-compose.yml` sobe as APIs com `ASPNETCORE_ENVIRONMENT=Staging` e aceita placeholders padronizados via variáveis de ambiente, como `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD`, `MONGODB_HOST`, `MONGODB_PORT`, `RABBITMQ_HOST`, `RABBITMQ_PORT`, `RABBITMQ_USERNAME`, `RABBITMQ_PASSWORD`, `SEQ_HOST` e `SEQ_PORT`.
+No Windows com Docker Desktop, o caminho mais estável é usar o fluxo sequencial já configurado no repositório. Ele sobe a infraestrutura primeiro, builda as imagens uma a uma e só depois executa o `docker compose up -d`, evitando cancelamentos intermitentes durante `dotnet restore` e `dotnet publish` concorrentes.
 
-Há um arquivo `.env.example` na raiz para servir de modelo local.
+Via task do VS Code:
 
-O `docker-compose.yml` já sobe:
+```text
+Run Task -> docker: compose up sequential
+```
 
-- `developer-evaluation-sales-api`
-- `developer-evaluation-products-api`
-- `developer-evaluation-carts-api`
-- `developer-evaluation-users-api`
-- `developer-evaluation-auth-api`
-- PostgreSQL com bases segregadas por serviço
-- MongoDB
-- RabbitMQ
-- Seq
+Via PowerShell:
 
-## Executar com Docker Compose
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\compose-up-sequential.ps1
+```
 
-Use na raiz do repositório:
+### Caminho direto com Docker Compose
+
+Se o seu ambiente Docker estiver estável para builds concorrentes, você também pode subir todo o ambiente local diretamente da raiz do repositório:
 
 ```powershell
 docker compose up --build
 ```
 
-Para forçar um conjunto explícito de variáveis:
+Se quiser customizar variáveis locais antes da subida:
 
 ```powershell
 Copy-Item .env.example .env
 docker compose --env-file .env up --build
 ```
 
-Endpoints locais:
+O ambiente sobe:
 
-- Sales API: `http://localhost:8081`
-- Products API: `http://localhost:8082`
-- Carts API: `http://localhost:8083`
-- Users API: `http://localhost:8084`
-- Auth API: `http://localhost:8085`
+- cinco hosts `WebApi`;
+- PostgreSQL com bases segregadas por serviço;
+- MongoDB;
+- Redis;
+- RabbitMQ;
+- Seq.
+
+## Endpoints locais
+
+- Sales API: `http://localhost:8081/api/sales`
+- Products API: `http://localhost:8082/api/products`
+- Carts API: `http://localhost:8083/api/carts`
+- Users API: `http://localhost:8084/api/users`
+- Auth API: `http://localhost:8085/api/auth/login`
 - Seq: `http://localhost:5341`
+- Redis: `localhost:6379`
 - RabbitMQ Management: `http://localhost:15672`
 
-## Build local
+## Build e testes
+
+Build da solução:
 
 ```powershell
 dotnet build .\Ambev.DeveloperEvaluation.slnx
 ```
 
-## Testes automatizados
-
-Os testes de integração e funcionais usam Testcontainers. Docker precisa estar ativo antes da execução.
+Testes automatizados:
 
 ```powershell
 dotnet test .\Ambev.DeveloperEvaluation.slnx
 ```
 
-Para rodar sem rebuild prévio:
+Para rodar os testes sem rebuild prévio:
 
 ```powershell
 dotnet test .\Ambev.DeveloperEvaluation.slnx --no-build
 ```
 
+Os testes de integração e funcionais usam Testcontainers, então o Docker precisa estar ativo durante a execução.
+
 ## Abrir no Visual Studio
 
 Abra a solution [Ambev.DeveloperEvaluation.slnx](c:/r/abi-gth-omnia-developer-evaluation/Ambev.DeveloperEvaluation.slnx).
 
-A árvore da solution está organizada por:
+## Navegação rápida
 
-- `src/BuildingBlocks`
-- `src/Modules/Auth`
-- `src/Modules/Carts`
-- `src/Modules/Products`
-- `src/Modules/Sales`
-- `src/Modules/Users`
-- `tests`
+- Para entender os componentes, APIs e filas RabbitMQ, consulte [docs/arquitetura.md](c:/r/abi-gth-omnia-developer-evaluation/docs/arquitetura.md).
+- Para entender onde fica cada parte do código, consulte [docs/estrutura-de-pastas.md](c:/r/abi-gth-omnia-developer-evaluation/docs/estrutura-de-pastas.md).
+- Para ver rotas, payloads, respostas e status code, consulte [docs/api.md](c:/r/abi-gth-omnia-developer-evaluation/docs/api.md).
 
-## Documentação complementar
-
-- `docs/00-visao-geral.md`
-- `docs/01-requisitos.md`
-- `docs/02-arquitetura.md`
-- `docs/05-microservices-e-dados.md`
-- `docs/06-containerizacao.md`
-- `docs/10-checklist-final.md`
-
-Os manifests em `ops/k8s` assumem `ASPNETCORE_ENVIRONMENT=Production`, e os arquivos `ops/k8s/secrets.staging.example.yaml` e `ops/k8s/secrets.production.example.yaml` usam placeholders padronizados para preenchimento no cluster.
-
-Para aplicar via overlay com Kustomize:
-
-```powershell
-kubectl apply -k .\ops\k8s\overlays\staging
-kubectl apply -k .\ops\k8s\overlays\production
-```
-
-A base reutilizável do Kustomize está em `ops/k8s/base`.
-
-Os overlays também diferenciam operação por ambiente: `staging` usa uma réplica por serviço, imagens com tag `:staging` e limites mais enxutos; `production` usa duas réplicas mínimas por serviço, HPA por CPU e memória, imagens travadas por digest, `imagePullPolicy: Always` e recursos mais altos.

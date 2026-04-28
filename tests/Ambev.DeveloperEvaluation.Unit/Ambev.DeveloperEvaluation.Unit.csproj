@@ -15,8 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BuildingBlocks\Common\Ambev.DeveloperEvaluation.Common.csproj" />
     <ProjectReference Include="..\..\src\BuildingBlocks\Domain\Ambev.DeveloperEvaluation.Domain.csproj" />
     <ProjectReference Include="..\..\src\BuildingBlocks\IoC\Ambev.DeveloperEvaluation.IoC.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Products\Application\Ambev.DeveloperEvaluation.Products.Application.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Products\Domain\Ambev.DeveloperEvaluation.Products.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Products\Infrastructure\Ambev.DeveloperEvaluation.Products.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Modules\Sales\Application\Ambev.DeveloperEvaluation.Sales.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Sales\Domain\Ambev.DeveloperEvaluation.Sales.Domain.csproj" />
   </ItemGroup>

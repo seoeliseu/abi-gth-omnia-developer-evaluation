@@ -1,9 +1,16 @@
 using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.RateLimiting;
 using Ambev.DeveloperEvaluation.Common.Observabilidade;
+using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.IoC;
+using Ambev.DeveloperEvaluation.IoC.Security;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Ambev.DeveloperEvaluation.ServiceDefaults.Middlewares;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +18,7 @@ using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
@@ -26,7 +34,8 @@ public static class ServiceApiHostExtensions
 
         builder.Configuration
             .AddJsonFile("appsettings.Global.json", optional: true, reloadOnChange: true)
-            .AddJsonFile($"appsettings.Global.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+            .AddJsonFile($"appsettings.Global.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
 
         builder.Host.UseSerilog((contexto, _, configuracaoLogger) =>
         {
@@ -53,6 +62,8 @@ public static class ServiceApiHostExtensions
             opcoes.SuppressAsyncSuffixInActionNames = false;
         });
         builder.Services.AddProblemDetails();
+        ConfigurarDataProtection(builder.Services, builder.Configuration);
+        ConfigurarAutenticacao(builder.Services, builder.Configuration);
         builder.Services.AddRateLimiter(opcoes =>
         {
             opcoes.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -117,7 +128,12 @@ public static class ServiceApiHostExtensions
             };
         });
 
-        app.UseHttpsRedirection();
+        if (DeveRedirecionarParaHttps(app.Configuration))
+        {
+            app.UseHttpsRedirection();
+        }
+
+        app.UseAuthentication();
         app.UseRateLimiter();
         app.UseRequestTimeouts();
         app.UseAuthorization();
@@ -133,5 +149,66 @@ public static class ServiceApiHostExtensions
         });
 
         return app;
+    }
+
+    private static void ConfigurarAutenticacao(IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtOptions = JwtAccessTokenIssuer.ResolveOptions(configuration);
+        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey));
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opcoes =>
+            {
+                opcoes.RequireHttpsMetadata = false;
+                opcoes.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtOptions.Audience,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = signingKey,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromSeconds(30)
+                };
+            });
+
+        services.AddAuthorization();
+    }
+
+    private static void ConfigurarDataProtection(IServiceCollection services, IConfiguration configuration)
+    {
+        var dataProtectionBuilder = services
+            .AddDataProtection()
+            .SetApplicationName("Ambev.DeveloperEvaluation");
+
+        var keysPath = configuration["DataProtection:KeysPath"];
+        if (!string.IsNullOrWhiteSpace(keysPath))
+        {
+            Directory.CreateDirectory(keysPath);
+            dataProtectionBuilder.PersistKeysToFileSystem(new DirectoryInfo(keysPath));
+        }
+
+        var certificatePath = configuration["DataProtection:CertificatePath"];
+        var certificatePassword = configuration["DataProtection:CertificatePassword"];
+        if (!string.IsNullOrWhiteSpace(certificatePath))
+        {
+            if (!File.Exists(certificatePath))
+            {
+                throw new InvalidOperationException($"O certificado de Data Protection não foi encontrado em '{certificatePath}'.");
+            }
+
+            var certificate = new X509Certificate2(
+                certificatePath,
+                certificatePassword,
+                X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+
+            dataProtectionBuilder.ProtectKeysWithCertificate(certificate);
+        }
+    }
+
+    private static bool DeveRedirecionarParaHttps(IConfiguration configuration)
+    {
+        return configuration.GetValue("Hosting:HttpsRedirectionEnabled", true);
     }
 }

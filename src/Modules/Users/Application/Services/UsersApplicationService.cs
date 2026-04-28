@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Common.Results;
+using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Users.Application.Common;
 using Ambev.DeveloperEvaluation.Users.Application.Contracts;
 using Ambev.DeveloperEvaluation.Users.Application.Repositories;
@@ -10,10 +11,12 @@ namespace Ambev.DeveloperEvaluation.Users.Application.Services;
 public sealed class UsersApplicationService : IUsersService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IPasswordSecurityService _passwordSecurityService;
 
-    public UsersApplicationService(IUserRepository userRepository)
+    public UsersApplicationService(IUserRepository userRepository, IPasswordSecurityService passwordSecurityService)
     {
         _userRepository = userRepository;
+        _passwordSecurityService = passwordSecurityService;
     }
 
     public async Task<Result<UserReference>> ObterPorIdAsync(long usuarioId, CancellationToken cancellationToken)
@@ -52,7 +55,7 @@ public sealed class UsersApplicationService : IUsersService
         var usuario = User.Criar(
             requisicao.Email,
             requisicao.Username,
-            requisicao.Password,
+            _passwordSecurityService.HashPassword(requisicao.Password),
             new UserName(requisicao.Name.Firstname, requisicao.Name.Lastname),
             new UserAddress(
                 requisicao.Address.City,
@@ -79,7 +82,7 @@ public sealed class UsersApplicationService : IUsersService
         usuario.Atualizar(
             requisicao.Email,
             requisicao.Username,
-            requisicao.Password,
+            _passwordSecurityService.HashPassword(requisicao.Password),
             new UserName(requisicao.Name.Firstname, requisicao.Name.Lastname),
             new UserAddress(
                 requisicao.Address.City,
@@ -112,7 +115,6 @@ public sealed class UsersApplicationService : IUsersService
             usuario.Id,
             usuario.Email,
             usuario.Username,
-            usuario.Password,
             new UserNameData(usuario.Name.Firstname, usuario.Name.Lastname),
             new UserAddressData(usuario.Address.City, usuario.Address.Street, usuario.Address.Number, usuario.Address.Zipcode, new UserGeolocationData(usuario.Address.Geolocation.Lat, usuario.Address.Geolocation.Long)),
             usuario.Phone,

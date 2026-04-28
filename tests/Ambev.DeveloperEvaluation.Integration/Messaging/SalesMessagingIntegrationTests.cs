@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Text.Json;
+using Ambev.DeveloperEvaluation.Common.Mensageria;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
@@ -6,7 +8,10 @@ using Ambev.DeveloperEvaluation.Sales.Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using Rebus.Bus;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
@@ -101,11 +106,75 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
         }
     }
 
-    private ServiceProvider CreateConsumerProvider(string consumerType, string queueSuffix)
+    [Fact]
+    public async Task SalesOutbox_ComPoisonMessage_DeveEncaminharParaDlq_E_EmitirLog()
+    {
+        var queueSuffix = Guid.NewGuid().ToString("N");
+        var queueName = $"developer-evaluation.products.integration.{queueSuffix}";
+        var errorQueueName = $"{queueName}.error";
+        using var loggerProvider = new InMemoryLoggerProvider();
+
+        var consumerProvider = CreateConsumerProvider(
+            "products",
+            queueSuffix,
+            services =>
+            {
+                services.RemoveAll<IProcessedMessageStore>();
+                services.AddScoped<IProcessedMessageStore, PoisonProcessedMessageStore>();
+            },
+            loggerProvider);
+
+        var publisherProvider = CreateSalesPublisherProvider(queueSuffix);
+
+        try
+        {
+            await StartHostedServicesAsync(consumerProvider);
+
+            var saleId = Guid.NewGuid();
+            var outboxId = Guid.NewGuid();
+            await SeedOutboxMessageAsync(outboxId, saleId, $"VENDA-POISON-{DateTime.UtcNow:yyyyMMddHHmmss}");
+
+            await StartHostedServicesAsync(publisherProvider);
+
+            await WaitUntilAsync(async () =>
+            {
+                await using var verificationContext = CreateDbContext();
+                var outboxMessage = await verificationContext.OutboxMessages.SingleAsync(message => message.Id == outboxId);
+                var dlqCount = await TryGetQueueMessageCountAsync(errorQueueName);
+                return outboxMessage.PublishedAt is not null && dlqCount == 1;
+            }, TimeSpan.FromSeconds(30));
+
+            var dlqCount = await TryGetQueueMessageCountAsync(errorQueueName);
+            Assert.Equal<uint>(1, dlqCount ?? 0);
+            Assert.True(loggerProvider.Contains(LogLevel.Error, "Mensagem desviada para DLQ"));
+        }
+        finally
+        {
+            await StopHostedServicesAsync(publisherProvider);
+            await StopHostedServicesAsync(consumerProvider);
+
+            await publisherProvider.DisposeAsync();
+            await consumerProvider.DisposeAsync();
+        }
+    }
+
+    private ServiceProvider CreateConsumerProvider(
+        string consumerType,
+        string queueSuffix,
+        Action<IServiceCollection>? configureServices = null,
+        ILoggerProvider? loggerProvider = null)
     {
         var configuration = CreateConfiguration($"developer-evaluation.{consumerType}.integration.{queueSuffix}");
         var services = new ServiceCollection();
-        services.AddLogging();
+        if (loggerProvider is null)
+        {
+            services.AddLogging();
+        }
+        else
+        {
+            services.AddLogging(builder => builder.AddProvider(loggerProvider));
+        }
+
         services.AdicionarInfraestruturaCompartilhada(configuration);
 
         switch (consumerType)
@@ -122,6 +191,8 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
             default:
                 throw new ArgumentOutOfRangeException(nameof(consumerType), consumerType, "Consumidor de teste não suportado.");
         }
+
+        configureServices?.Invoke(services);
 
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateOnBuild = true, ValidateScopes = true });
     }
@@ -143,6 +214,7 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
         configuration["ConnectionStrings:MongoDb"] = "mongodb://localhost:27017/developer-evaluation-tests";
         configuration["RabbitMq:ConnectionString"] = _rabbitMqContainer.GetConnectionString();
         configuration["RabbitMq:QueueName"] = queueName;
+        configuration["RabbitMq:MaxDeliveryAttempts"] = "3";
         return configuration;
     }
 
@@ -204,5 +276,97 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
         }
 
         throw new TimeoutException($"Condição não satisfeita dentro do tempo limite de {timeout}.");
+    }
+
+    private async Task<uint?> TryGetQueueMessageCountAsync(string queueName)
+    {
+        try
+        {
+            var connectionFactory = new ConnectionFactory
+            {
+                Uri = new Uri(_rabbitMqContainer.GetConnectionString())
+            };
+
+            await using var connection = await connectionFactory.CreateConnectionAsync(CancellationToken.None);
+            await using var channel = await connection.CreateChannelAsync(cancellationToken: CancellationToken.None);
+            var queue = await channel.QueueDeclarePassiveAsync(queueName, CancellationToken.None);
+            return queue.MessageCount;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+}
+
+public sealed class PoisonProcessedMessageStore : IProcessedMessageStore
+{
+    public Task<bool> JaProcessadaAsync(string consumidor, string messageId, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(false);
+    }
+
+    public Task RegistrarAsync(string consumidor, string messageId, CancellationToken cancellationToken)
+    {
+        throw new InvalidOperationException("Poison message de teste para validar a DLQ do Rebus.");
+    }
+}
+
+public sealed class InMemoryLoggerProvider : ILoggerProvider
+{
+    private readonly ConcurrentQueue<CapturedLogEntry> _entries = new();
+
+    public ILogger CreateLogger(string categoryName)
+    {
+        return new InMemoryLogger(categoryName, _entries);
+    }
+
+    public bool Contains(LogLevel logLevel, string messageFragment)
+    {
+        return _entries.Any(entry =>
+            entry.LogLevel == logLevel
+            && entry.Message.Contains(messageFragment, StringComparison.Ordinal));
+    }
+
+    public void Dispose()
+    {
+    }
+
+    private sealed class InMemoryLogger : ILogger
+    {
+        private readonly string _categoryName;
+        private readonly ConcurrentQueue<CapturedLogEntry> _entries;
+
+        public InMemoryLogger(string categoryName, ConcurrentQueue<CapturedLogEntry> entries)
+        {
+            _categoryName = categoryName;
+            _entries = entries;
+        }
+
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull
+        {
+            return NullScope.Instance;
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return true;
+        }
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            _entries.Enqueue(new CapturedLogEntry(_categoryName, logLevel, formatter(state, exception)));
+        }
+    }
+
+    private sealed record CapturedLogEntry(string CategoryName, LogLevel LogLevel, string Message);
+
+    private sealed class NullScope : IDisposable
+    {
+        public static NullScope Instance { get; } = new();
+
+        public void Dispose()
+        {
+        }
     }
 }

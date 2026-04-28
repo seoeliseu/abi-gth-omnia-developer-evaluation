@@ -1,3 +1,4 @@
+using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,6 +6,8 @@ namespace Ambev.DeveloperEvaluation.ORM.Persistence;
 
 public static class DeveloperEvaluationDataSeeder
 {
+    private static readonly PasswordSecurityService PasswordSecurityService = new();
+
     public static async Task SeedAsync(DeveloperEvaluationDbContext context, CancellationToken cancellationToken)
     {
         var seededProducts = false;
@@ -27,9 +30,15 @@ public static class DeveloperEvaluationDataSeeder
             seededUsers = true;
             context.Users.AddRange(
             [
-                new UserEntity { Id = 1, Email = "john@example.com", Username = "john", Password = "123456", Firstname = "John", Lastname = "Doe", City = "São Paulo", Street = "Rua A", Number = 10, Zipcode = "01000-000", GeoLat = "-23.5505", GeoLong = "-46.6333", Phone = "11999999999", Status = "Active", Role = "Customer" },
-                new UserEntity { Id = 2, Email = "mary@example.com", Username = "mary", Password = "123456", Firstname = "Mary", Lastname = "Doe", City = "Campinas", Street = "Rua B", Number = 20, Zipcode = "13000-000", GeoLat = "-22.9099", GeoLong = "-47.0626", Phone = "11888888888", Status = "Active", Role = "Manager" }
+                new UserEntity { Id = 1, Email = "john@example.com", Username = "john", Password = PasswordSecurityService.HashPassword("123456"), Firstname = "John", Lastname = "Doe", City = "São Paulo", Street = "Rua A", Number = 10, Zipcode = "01000-000", GeoLat = "-23.5505", GeoLong = "-46.6333", Phone = "11999999999", Status = "Active", Role = "Customer" },
+                new UserEntity { Id = 2, Email = "mary@example.com", Username = "mary", Password = PasswordSecurityService.HashPassword("123456"), Firstname = "Mary", Lastname = "Doe", City = "Campinas", Street = "Rua B", Number = 20, Zipcode = "13000-000", GeoLat = "-22.9099", GeoLong = "-47.0626", Phone = "11888888888", Status = "Active", Role = "Manager" }
             ]);
+        }
+
+        var usuariosLegados = await context.Users.ToListAsync(cancellationToken);
+        foreach (var usuario in usuariosLegados.Where(item => PasswordSecurityService.NeedsRehash(item.Password)))
+        {
+            usuario.Password = PasswordSecurityService.HashPassword(usuario.Password);
         }
 
         if (!await context.Carts.AnyAsync(cancellationToken))

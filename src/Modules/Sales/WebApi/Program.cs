@@ -6,7 +6,7 @@ var app = ServiceApiHostExtensions.BuildServiceApi(
 	"Ambev.DeveloperEvaluation.Sales.WebApi",
 	(services, configuration) =>
 	{
-		services.AdicionarServicosAplicacaoSales();
+		services.AdicionarServicosAplicacaoSales(configuration);
 		services.AdicionarMensageriaSales(configuration);
 	});
 await app.RunAsync();

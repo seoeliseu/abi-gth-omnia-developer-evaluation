@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 *.env
+ops/docker/data-protection/*.pfx
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

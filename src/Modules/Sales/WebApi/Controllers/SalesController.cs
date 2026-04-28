@@ -1,5 +1,6 @@
 using Ambev.DeveloperEvaluation.Sales.Application.Contracts;
 using Ambev.DeveloperEvaluation.ServiceDefaults.Resultados;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.RateLimiting;
 namespace Ambev.DeveloperEvaluation.Sales.WebApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/sales")]
 public sealed class SalesController : ControllerBase
 {
