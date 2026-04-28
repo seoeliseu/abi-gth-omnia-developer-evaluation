@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Sales.WebApi.Controllers;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +18,11 @@ public sealed class SalesApiFactory : WebApplicationFactory<SalesController>, IA
         ["ConnectionStrings__MongoDb"] = null,
         ["MongoDb__Database"] = null,
         ["RabbitMq__ConnectionString"] = null,
-        ["RabbitMq__QueueName"] = null
+        ["RabbitMq__QueueName"] = null,
+        ["Jwt__Issuer"] = null,
+        ["Jwt__Audience"] = null,
+        ["Jwt__SecretKey"] = null,
+        ["Jwt__ExpirationMinutes"] = null
     };
 
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder("postgres:15.1")
@@ -40,14 +45,21 @@ public sealed class SalesApiFactory : WebApplicationFactory<SalesController>, IA
         await _mongoDbContainer.StartAsync();
         await _rabbitMqContainer.StartAsync();
 
-        ApplyEnvironmentSettings(new Dictionary<string, string?>
+        var settings = new Dictionary<string, string?>
         {
             ["ConnectionStrings__Postgres"] = _postgreSqlContainer.GetConnectionString(),
             ["ConnectionStrings__MongoDb"] = _mongoDbContainer.GetConnectionString(),
             ["MongoDb__Database"] = DatabaseName,
             ["RabbitMq__ConnectionString"] = _rabbitMqContainer.GetConnectionString(),
             ["RabbitMq__QueueName"] = "developer-evaluation.sales.functional"
-        });
+        };
+
+        foreach (var setting in FunctionalJwtSettings.EnvironmentVariables)
+        {
+            settings[setting.Key] = setting.Value;
+        }
+
+        ApplyEnvironmentSettings(settings);
     }
 
     public new async Task DisposeAsync()
@@ -64,15 +76,28 @@ public sealed class SalesApiFactory : WebApplicationFactory<SalesController>, IA
         builder.UseEnvironment("Development");
         builder.ConfigureAppConfiguration((_, configurationBuilder) =>
         {
-            configurationBuilder.AddInMemoryCollection(new Dictionary<string, string?>
+            var settings = new Dictionary<string, string?>
             {
                 ["ConnectionStrings:Postgres"] = _postgreSqlContainer.GetConnectionString(),
                 ["ConnectionStrings:MongoDb"] = _mongoDbContainer.GetConnectionString(),
                 ["MongoDb:Database"] = DatabaseName,
                 ["RabbitMq:ConnectionString"] = _rabbitMqContainer.GetConnectionString(),
                 ["RabbitMq:QueueName"] = "developer-evaluation.sales.functional"
-            });
+            };
+
+            foreach (var setting in FunctionalJwtSettings.ConfigurationValues)
+            {
+                settings[setting.Key] = setting.Value;
+            }
+
+            configurationBuilder.AddInMemoryCollection(settings);
         });
+    }
+
+    protected override void ConfigureClient(HttpClient client)
+    {
+        base.ConfigureClient(client);
+        client.DefaultRequestHeaders.Authorization = FunctionalJwtTokenFactory.CreateAuthorizationHeader();
     }
 
     private static void ApplyEnvironmentSettings(IReadOnlyDictionary<string, string?> settings)

@@ -38,6 +38,9 @@ public sealed class RebusDlqErrorHandlerDecorator : IErrorHandler
         }
         catch (Exception ex)
         {
+            RebusDlqDiagnostics.Record(
+                $"Falha ao encaminhar mensagem para DLQ {_errorQueueName} a partir da fila {sourceQueue}. MessageId={messageId}; MessageType={messageType}; Exception={ex}");
+
             Console.Error.WriteLine(
                 "Falha ao encaminhar mensagem para DLQ {0} a partir da fila {1}. MessageId={2}; MessageType={3}; Exception={4}",
                 _errorQueueName,
@@ -56,6 +59,9 @@ public sealed class RebusDlqErrorHandlerDecorator : IErrorHandler
             KeyValuePair.Create<string, object?>("message_type", messageType),
             KeyValuePair.Create<string, object?>("failure_type", exception.Type));
 
+        RebusDlqDiagnostics.Record(
+            $"Mensagem desviada para DLQ {_errorQueueName} a partir da fila {sourceQueue}. MessageId={messageId}; MessageType={messageType}; DeliveryCount={deliveryCount}; CorrelationId={correlationId}; FailureType={exception.Type}; FailureMessage={exception.Message}");
+
         Console.Error.WriteLine(
             "Mensagem desviada para DLQ {0} a partir da fila {1}. MessageId={2}; MessageType={3}; DeliveryCount={4}; CorrelationId={5}; FailureType={6}; FailureMessage={7}",
             _errorQueueName,
@@ -73,5 +79,40 @@ public sealed class RebusDlqErrorHandlerDecorator : IErrorHandler
         return transportMessage.Headers.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value)
             ? value
             : fallback;
+    }
+}
+
+public static class RebusDlqDiagnostics
+{
+    private static readonly Queue<string> Entries = new();
+    private static readonly object Sync = new();
+
+    public static void Clear()
+    {
+        lock (Sync)
+        {
+            Entries.Clear();
+        }
+    }
+
+    public static void Record(string message)
+    {
+        lock (Sync)
+        {
+            Entries.Enqueue(message);
+
+            while (Entries.Count > 50)
+            {
+                Entries.Dequeue();
+            }
+        }
+    }
+
+    public static bool Contains(string messageFragment)
+    {
+        lock (Sync)
+        {
+            return Entries.Any(entry => entry.Contains(messageFragment, StringComparison.Ordinal));
+        }
     }
 }

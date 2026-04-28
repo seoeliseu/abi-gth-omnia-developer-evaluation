@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Text.Json;
 using Ambev.DeveloperEvaluation.Common.Mensageria;
 using Ambev.DeveloperEvaluation.IoC;
+using Ambev.DeveloperEvaluation.IoC.Mensageria;
 using Ambev.DeveloperEvaluation.ORM.Persistence;
 using Ambev.DeveloperEvaluation.ORM.Persistence.Entities;
 using Ambev.DeveloperEvaluation.Sales.Domain.Events;
@@ -112,7 +113,7 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
         var queueSuffix = Guid.NewGuid().ToString("N");
         var queueName = $"developer-evaluation.products.integration.{queueSuffix}";
         var errorQueueName = $"{queueName}.error";
-        using var loggerProvider = new InMemoryLoggerProvider();
+        RebusDlqDiagnostics.Clear();
 
         var consumerProvider = CreateConsumerProvider(
             "products",
@@ -121,8 +122,7 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
             {
                 services.RemoveAll<IProcessedMessageStore>();
                 services.AddScoped<IProcessedMessageStore, PoisonProcessedMessageStore>();
-            },
-            loggerProvider);
+            });
 
         var publisherProvider = CreateSalesPublisherProvider(queueSuffix);
 
@@ -146,7 +146,7 @@ public sealed class SalesMessagingIntegrationTests : IAsyncLifetime
 
             var dlqCount = await TryGetQueueMessageCountAsync(errorQueueName);
             Assert.Equal<uint>(1, dlqCount ?? 0);
-            Assert.True(loggerProvider.Contains(LogLevel.Error, "Mensagem desviada para DLQ"));
+            Assert.True(RebusDlqDiagnostics.Contains("Mensagem desviada para DLQ"));
         }
         finally
         {

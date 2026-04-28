@@ -40,6 +40,7 @@ public static class ExtensoesInjecaoDependencia
 
     public static IServiceCollection AdicionarInfraestruturaCompartilhada(this IServiceCollection servicos, IConfiguration configuracao)
     {
+        servicos.AddSingleton(configuracao);
         servicos.AdicionarServicosSeguranca();
         servicos.AdicionarResilienciaIntegracoes();
         servicos.AdicionarInfraestruturaPersistencia(configuracao);
